@@ -1,0 +1,7 @@
+{
+  "name": "gosoan",
+  "version": "0.0.1",
+  "repository": "git@github.com:dargmuesli/gosoan.git",
+  "author": "Jonas Thelemann <e-mail@jonas-thelemann.de>",
+  "private": true
+}
