@@ -1,4 +1,4 @@
-FROM golang:1.16.2-alpine3.13@sha256:12d5f94cd4d2840e538e82e26a5dfddf711b30cc98a9f6e01bcf65d7aaf7ccd8 AS stage_build
+FROM golang:1.16.2-alpine3.13@sha256:3411aef9ae9cb0fe3534fe2a4d1a9745d952d9a5ed1e20a11ff10549731156e8 AS stage_build
 RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
 ENV USER=appuser
 ENV UID=10001
