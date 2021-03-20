@@ -1,3 +1,5 @@
+# Source: https://chemidy.medium.com/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
+
 FROM golang:1.16.2-alpine3.13@sha256:3411aef9ae9cb0fe3534fe2a4d1a9745d952d9a5ed1e20a11ff10549731156e8 AS stage_build
 RUN apk update && apk add --no-cache git ca-certificates tzdata && update-ca-certificates
 ENV USER=appuser
