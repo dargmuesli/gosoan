@@ -1,4 +1,4 @@
-package de.jonas_thelemann.uni.gosoan.sensor
+package de.jonas_thelemann.uni.gosoan.service
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 private const val SENSOR_DELAY_DEFAULT = SensorManager.SENSOR_DELAY_NORMAL
 
 @Singleton
-class GosoanSensorEventListener @Inject constructor(@ApplicationContext private val context: Context) :
+class SensorService @Inject constructor(@ApplicationContext private val context: Context) :
     SensorEventListener, LiveData<GosoanSensorEvent>() {
     private lateinit var sensorManager: SensorManager // System services not available to Activities before onCreate().
     private val sensorMap: MutableMap<Int, Sensor> = mutableMapOf()
@@ -103,5 +103,9 @@ class GosoanSensorEventListener @Inject constructor(@ApplicationContext private 
 
             sensorMap[sensorNumber] = sensor
         }
+    }
+
+    fun getSensors(): List<Sensor> {
+        return sensorManager.getSensorList(Sensor.TYPE_ALL).toList()
     }
 }

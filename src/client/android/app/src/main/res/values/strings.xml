@@ -4,12 +4,14 @@
     <string name="label">data</string>
     <string name="search">Search</string>
     <string name="more">More</string>
-    <string name="server_uri">Server URI</string>
+    <string name="server_ip">Server IP</string>
     <string name="data_format">Data format</string>
     <string name="sensors">Sensors</string>
     <string name="preferences">Preferences</string>
     <string name="gosoan">Gosoan</string>
     <string name="transmission_method">Transmission method</string>
-    <string name="toggle">Toggle</string>
+    <string name="toggle_measurements">Toggle measurements</string>
     <string name="measurement_frequency">Measurement frequency</string>
+    <string name="empty_hint">It\'s empty in here!</string>
+    <string name="unable_to_fetch_sensors">Unable to fetch sensors</string>
 </resources>

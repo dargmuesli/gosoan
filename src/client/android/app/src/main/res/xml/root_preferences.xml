@@ -3,31 +3,43 @@
     <!--    <PreferenceCategory app:title="Global">-->
 
     <SwitchPreferenceCompat
+        app:defaultValue="true"
+        app:icon="@drawable/ic_baseline_sensors_24"
         app:key="enable"
-        app:title="@string/toggle" />
+        app:title="@string/toggle_measurements" />
 
     <EditTextPreference
-        app:key="url"
-        app:title="@string/server_uri"
+        app:defaultValue="127.0.0.1"
+        app:dependency="enable"
+        app:icon="@drawable/ic_baseline_cloud_24"
+        app:key="server_ip"
+        app:title="@string/server_ip"
         app:useSimpleSummaryProvider="true" />
 
     <EditTextPreference
+        app:defaultValue="200000"
+        app:dependency="enable"
+        app:icon="@drawable/ic_baseline_timer_24"
         app:key="measurement_frequency"
         app:title="@string/measurement_frequency"
         app:useSimpleSummaryProvider="true" />
 
     <ListPreference
         app:defaultValue="flatbuffers"
+        app:dependency="enable"
         app:entries="@array/format_entries"
         app:entryValues="@array/format_values"
+        app:icon="@drawable/ic_baseline_text_format_24"
         app:key="format"
         app:title="@string/data_format"
         app:useSimpleSummaryProvider="true" />
 
     <ListPreference
         app:defaultValue="websocket"
+        app:dependency="enable"
         app:entries="@array/transmission_entries"
         app:entryValues="@array/transmission_values"
+        app:icon="@drawable/ic_baseline_import_export_24"
         app:key="transmission"
         app:title="@string/transmission_method"
         app:useSimpleSummaryProvider="true" />

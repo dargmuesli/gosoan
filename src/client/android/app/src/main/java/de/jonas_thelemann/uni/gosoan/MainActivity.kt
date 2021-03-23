@@ -3,21 +3,21 @@ package de.jonas_thelemann.uni.gosoan
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
-import de.jonas_thelemann.uni.gosoan.navigation.GosoanNavigation
-import de.jonas_thelemann.uni.gosoan.sensor.GosoanSensorEventListener
+import de.jonas_thelemann.uni.gosoan.navigation.Navigation
+import de.jonas_thelemann.uni.gosoan.service.SensorService
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     @Inject
-    lateinit var gosoanSensorEventListener: GosoanSensorEventListener
-    private val gosoanNavigation: GosoanNavigation = GosoanNavigation(this)
+    lateinit var sensorService: SensorService
+    private val gosoanNavigation: Navigation = Navigation(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         gosoanNavigation.onCreate()
-        gosoanSensorEventListener.onCreate()
+        sensorService.onCreate()
     }
 
     // vs onCreate: would have sensor always sending data
@@ -32,13 +32,13 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        gosoanSensorEventListener.onStart()
+        sensorService.onStart()
     }
 
     override fun onStop() {
         super.onStop()
 
-        gosoanSensorEventListener.onStop()
+        sensorService.onStop()
     }
 
     override fun onSupportNavigateUp(): Boolean {

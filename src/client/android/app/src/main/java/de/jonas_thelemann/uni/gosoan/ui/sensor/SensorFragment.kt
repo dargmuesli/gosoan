@@ -6,22 +6,40 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import de.jonas_thelemann.uni.gosoan.R
 import de.jonas_thelemann.uni.gosoan.databinding.FragmentSensorBinding
 
 @AndroidEntryPoint
 class SensorFragment : Fragment(R.layout.fragment_sensor) {
-    private var _binding: FragmentSensorBinding? = null
-    private val binding get() = _binding!!
     private val viewModel: SensorViewModel by viewModels()
+
+    private lateinit var binding: FragmentSensorBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSensorBinding.inflate(inflater, container, false)
+        viewModel.errorAction.observe(viewLifecycleOwner, { exception: Exception? ->
+            exception?.let {
+                Snackbar.make(
+                    requireView(),
+                    R.string.unable_to_fetch_sensors,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                findNavController().navigateUp()
+                viewModel.onErrorActionCompleted()
+            }
+        })
+
+        binding = FragmentSensorBinding.inflate(inflater)
+        binding.viewModel = viewModel
+        binding.recyclerView.adapter = SensorListAdapter()
+        binding.lifecycleOwner = this
+        viewModel.refresh()
         return binding.root
     }
 
@@ -30,8 +48,9 @@ class SensorFragment : Fragment(R.layout.fragment_sensor) {
 
         lifecycle.addObserver(viewModel)
 
-        viewModel.data.observe(viewLifecycleOwner, {
-            binding.label.text = it.toString()
+        viewModel.sensorData.observe(viewLifecycleOwner, {
+//            binding.
+//            binding.label.text = it.toString()
         })
     }
 }
