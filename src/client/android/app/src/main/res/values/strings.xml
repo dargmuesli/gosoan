@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Gosoan</string>
     <string name="fragment">Fragment</string>
+    <string name="label">data</string>
 </resources>
