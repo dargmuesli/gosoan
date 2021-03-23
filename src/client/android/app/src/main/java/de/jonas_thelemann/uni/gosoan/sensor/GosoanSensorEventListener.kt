@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.lifecycle.LiveData
 import dagger.hilt.android.qualifiers.ApplicationContext
+import de.jonas_thelemann.uni.gosoan.BuildConfig
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -81,11 +82,11 @@ class GosoanSensorEventListener @Inject constructor(@ApplicationContext private 
     }
 
 
-    fun setupSensors() {
+    fun onCreate() {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         for (sensorApiPair in sensorApiMap) {
-            if (sensorApiPair.value > android.os.Build.VERSION.SDK_INT) continue
+            if (sensorApiPair.value > BuildConfig.MIN_SDK_VERSION) continue
 
             val sensorNumber = sensorApiPair.key
 

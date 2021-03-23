@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/group_main">
+        <item
+            android:id="@+id/navigation_sensor"
+            android:icon="@drawable/ic_baseline_smartphone_24"
+            android:title="@string/sensors" />
+    </group>
+    <group android:id="@+id/group_preferences">
+        <item
+            android:id="@+id/navigation_preference"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:title="@string/preferences" />
+    </group>
+</menu>

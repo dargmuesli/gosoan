@@ -1,4 +1,4 @@
-package de.jonas_thelemann.uni.gosoan.ui
+package de.jonas_thelemann.uni.gosoan.ui.sensor
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
@@ -10,7 +10,7 @@ import de.jonas_thelemann.uni.gosoan.repository.SensorRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class SensorViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     sensorRepository: SensorRepository
 ) : LifecycleObserver, ViewModel() {

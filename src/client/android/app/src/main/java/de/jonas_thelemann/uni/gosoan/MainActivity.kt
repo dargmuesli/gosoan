@@ -16,8 +16,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        gosoanNavigation.setupNavigation()
-        gosoanSensorEventListener.setupSensors()
+        gosoanNavigation.onCreate()
+        gosoanSensorEventListener.onCreate()
     }
 
     // vs onCreate: would have sensor always sending data
@@ -39,5 +39,9 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
 
         gosoanSensorEventListener.onStop()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return gosoanNavigation.onSupportNavigateUp() || super.onSupportNavigateUp()
     }
 }

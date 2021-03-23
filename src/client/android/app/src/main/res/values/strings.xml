@@ -2,4 +2,14 @@
     <string name="app_name">Gosoan</string>
     <string name="fragment">Fragment</string>
     <string name="label">data</string>
+    <string name="search">Search</string>
+    <string name="more">More</string>
+    <string name="server_uri">Server URI</string>
+    <string name="data_format">Data format</string>
+    <string name="sensors">Sensors</string>
+    <string name="preferences">Preferences</string>
+    <string name="gosoan">Gosoan</string>
+    <string name="transmission_method">Transmission method</string>
+    <string name="toggle">Toggle</string>
+    <string name="measurement_frequency">Measurement frequency</string>
 </resources>
