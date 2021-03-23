@@ -1,3 +1,15 @@
+# [0.3.0](https://github.com/dargmuesli/gosoan/compare/0.2.0...0.3.0) (2021-03-23)
+
+
+### Bug Fixes
+
+* **docker:** correct build stages ([df9a346](https://github.com/dargmuesli/gosoan/commit/df9a34652567f9a292287e85dd9078ad63ab6265))
+
+
+### Features
+
+* **android:** add icon ([2945bf1](https://github.com/dargmuesli/gosoan/commit/2945bf13b2d745961716dfef6268d63849d52e0c))
+
 # [0.2.0](https://github.com/dargmuesli/gosoan/compare/0.1.0...0.2.0) (2021-03-23)
 
 
