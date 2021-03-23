@@ -1,3 +1,11 @@
+# [0.4.0](https://github.com/dargmuesli/gosoan/compare/0.3.0...0.4.0) (2021-03-23)
+
+
+### Features
+
+* **android:** add preferences & bottom action bar ([940ecc2](https://github.com/dargmuesli/gosoan/commit/940ecc25ba3fdc7680ae6fd69b30609c93124ea1))
+* **android:** add sensor cards ([21a00b9](https://github.com/dargmuesli/gosoan/commit/21a00b99d632d93220b1ae5bd00e7dee2d1bc4fe))
+
 # [0.3.0](https://github.com/dargmuesli/gosoan/compare/0.2.0...0.3.0) (2021-03-23)
 
 
