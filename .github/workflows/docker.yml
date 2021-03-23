@@ -99,11 +99,11 @@ jobs:
         run: |
           docker buildx build \
             --cache-from=$IMAGE_ID:cache \
-            -t stage_build \
-            --target build \
+            -t build \
+            --target stage_build \
             --load \
             ./src/server/go/
-          docker container create --name extract stage_build
+          docker container create --name extract build
           docker container cp extract:/go/bin/ ./dist/
           docker container rm -f extract
 
