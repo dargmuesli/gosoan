@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/dargmuesli/gosoan/compare/0.4.0...0.5.0) (2021-03-25)
+
+
+### Features
+
+* **android:** add search ([527c1c1](https://github.com/dargmuesli/gosoan/commit/527c1c1411b51c37200ebe729c92c1602f25a26e))
+* **android:** scope settings individually ([79d7d8b](https://github.com/dargmuesli/gosoan/commit/79d7d8b3f4163bc378c1805764bc8c327b18bc5d))
+* **assets:** add blender files ([504e263](https://github.com/dargmuesli/gosoan/commit/504e26397aeebb253cc33484f8aea50da4d7805e))
+
 # [0.4.0](https://github.com/dargmuesli/gosoan/compare/0.3.0...0.4.0) (2021-03-23)
 
 
