@@ -3,16 +3,14 @@ package de.jonas_thelemann.uni.gosoan.navigation
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.core.view.iterator
-import androidx.navigation.findNavController
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -26,12 +24,13 @@ import javax.inject.Singleton
 class GosoanNavigation constructor(private val activity: MainActivity) {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<NavigationView>
+    private lateinit var navigationController: NavController
     private lateinit var scrim: View
 
     fun onCreateActivity() {
         activity.setContentView(R.layout.activity_main)
 
-        val navigationController =
+        navigationController =
             (activity.supportFragmentManager.findFragmentById(R.id.fragment_nav_host) as NavHostFragment).navController
         val navigationView = activity.findViewById<NavigationView>(R.id.nav_view)
 
@@ -49,7 +48,8 @@ class GosoanNavigation constructor(private val activity: MainActivity) {
 
             val menu = navigationView.menu.findItem(destination.id)
             menu?.isEnabled = false
-            activity.findViewById<TextView>(R.id.textViewNavigation).text = navigationController.currentDestination?.label
+            activity.findViewById<TextView>(R.id.textViewNavigation).text =
+                navigationController.currentDestination?.label
         }
 
         scrim.setOnClickListener {
@@ -93,10 +93,7 @@ class GosoanNavigation constructor(private val activity: MainActivity) {
 
     fun onSupportNavigateUp(): Boolean {
         bottomSheetHide()
-
-        val navigationController = activity.findNavController(R.id.fragment_nav_host)
-
-        return navigationController.navigateUp(appBarConfiguration)
+        return true
     }
 
     private fun bottomSheetHide() {

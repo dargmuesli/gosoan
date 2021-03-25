@@ -20,7 +20,7 @@ fun SwipeRefreshLayout.bindRefreshListener(listener: Runnable) {
 }
 
 @BindingAdapter("sensors")
-fun RecyclerView.bindSensors(news: List<Sensor>?) {
+fun RecyclerView.bindSensors(sensors: List<Sensor>?) {
     val adapter = adapter as SensorListAdapter
-    adapter.submitList(news)
+    adapter.submitList(sensors)
 }

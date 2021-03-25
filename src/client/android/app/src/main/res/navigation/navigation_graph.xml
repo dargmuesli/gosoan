@@ -9,11 +9,21 @@
         android:id="@+id/navigation_sensor"
         android:name="de.jonas_thelemann.uni.gosoan.ui.sensor.SensorFragment"
         android:label="@string/sensors"
-        tools:layout="@layout/fragment_sensor" />
+        tools:layout="@layout/fragment_sensor" >
+        <action
+            android:id="@+id/action_navigation_sensor_to_navigation_preference"
+            app:destination="@id/navigation_preference" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_preference"
-        android:name="de.jonas_thelemann.uni.gosoan.ui.preference.PreferenceFragment"
-        android:label="@string/preferences" />
+        android:name="de.jonas_thelemann.uni.gosoan.ui.preference.PreferenceWrapperFragment"
+        android:label="@string/preferences">
+        <argument
+            android:name="sensorId"
+            app:argType="de.jonas_thelemann.uni.gosoan.model.SensorId"
+            android:defaultValue="@null"
+            app:nullable="true" />
+    </fragment>
 
 </navigation>

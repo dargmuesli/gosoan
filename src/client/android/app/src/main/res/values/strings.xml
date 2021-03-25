@@ -8,6 +8,7 @@
     <string name="data_format">Data format</string>
     <string name="sensors">Sensors</string>
     <string name="preferences">Preferences</string>
+    <string name="preferences_global">Global preferences</string>
     <string name="gosoan">Gosoan</string>
     <string name="transmission_method">Transmission method</string>
     <string name="toggle_measurements">Toggle measurements</string>

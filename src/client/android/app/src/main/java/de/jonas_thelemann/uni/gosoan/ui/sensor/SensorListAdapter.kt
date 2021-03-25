@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.jonas_thelemann.uni.gosoan.databinding.CardSensorBinding
+import de.jonas_thelemann.uni.gosoan.model.SensorId
+import de.jonas_thelemann.uni.gosoan.ui.OnClickListener
 
-class SensorListAdapter :
+class SensorListAdapter(private val onClickListener: OnClickListener<SensorId>) :
     ListAdapter<Sensor, SensorListAdapter.ViewHolder>(DiffCallback) {
 
     inner class ViewHolder(private val binding: CardSensorBinding) :
@@ -16,6 +18,8 @@ class SensorListAdapter :
 
         fun bind(sensor: Sensor) {
             binding.infoText.text = sensor.name
+            binding.sensorId = SensorId(sensor.name, sensor.type)
+            binding.onClickListener = onClickListener
             binding.executePendingBindings()
         }
     }

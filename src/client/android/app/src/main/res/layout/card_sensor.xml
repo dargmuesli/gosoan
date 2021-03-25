@@ -9,8 +9,8 @@
             type="de.jonas_thelemann.uni.gosoan.ui.OnClickListener" />
 
         <variable
-            name="sensor"
-            type="android.hardware.Sensor" />
+            name="sensorId"
+            type="de.jonas_thelemann.uni.gosoan.model.SensorId" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:textAppearance="?attr/textAppearanceHeadline6"
+            android:onClick="@{() -> onClickListener.onClick(sensorId)}"
             tools:text="Text" />
     </com.google.android.material.card.MaterialCardView>
 </layout>

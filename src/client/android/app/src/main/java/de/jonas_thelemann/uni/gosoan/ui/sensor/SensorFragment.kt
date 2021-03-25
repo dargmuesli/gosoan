@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.R
 import de.jonas_thelemann.uni.gosoan.databinding.FragmentSensorBinding
+import de.jonas_thelemann.uni.gosoan.ui.OnClickListener
 
 @AndroidEntryPoint
 class SensorFragment : Fragment(R.layout.fragment_sensor) {
@@ -38,7 +39,12 @@ class SensorFragment : Fragment(R.layout.fragment_sensor) {
 
         binding = FragmentSensorBinding.inflate(inflater)
         binding.viewModel = viewModel
-        binding.recyclerView.adapter = SensorListAdapter()
+        binding.recyclerView.adapter = SensorListAdapter(OnClickListener { sensorId ->
+            val action = SensorFragmentDirections.actionNavigationSensorToNavigationPreference(
+                sensorId
+            )
+            findNavController().navigate(action)
+        })
         binding.lifecycleOwner = this
         viewModel.refresh()
 
