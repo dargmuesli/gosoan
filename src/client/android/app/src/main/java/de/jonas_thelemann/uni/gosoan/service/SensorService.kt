@@ -105,7 +105,7 @@ class SensorService @Inject constructor(@ApplicationContext private val context:
         }
     }
 
-    fun getSensors(): List<Sensor> {
-        return sensorManager.getSensorList(Sensor.TYPE_ALL).toList()
+    fun getSensors(query: String = ""): List<Sensor> {
+        return sensorManager.getSensorList(Sensor.TYPE_ALL).filter { it.name.contains(query) }
     }
 }

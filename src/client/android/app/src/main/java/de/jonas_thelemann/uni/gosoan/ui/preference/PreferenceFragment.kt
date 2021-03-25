@@ -20,9 +20,8 @@ class PreferenceFragment : PreferenceFragmentCompat() {
                 if (TextUtils.isEmpty(text)) {
                     "Not set"
                 } else {
-                    text + " ms"
+                    "$text ms"
                 }
             }
-
     }
 }

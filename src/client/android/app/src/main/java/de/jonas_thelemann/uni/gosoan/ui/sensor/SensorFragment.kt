@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.R
 import de.jonas_thelemann.uni.gosoan.databinding.FragmentSensorBinding
 
@@ -16,7 +17,7 @@ import de.jonas_thelemann.uni.gosoan.databinding.FragmentSensorBinding
 class SensorFragment : Fragment(R.layout.fragment_sensor) {
     private val viewModel: SensorViewModel by viewModels()
 
-    private lateinit var binding: FragmentSensorBinding
+    lateinit var binding: FragmentSensorBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,17 +41,23 @@ class SensorFragment : Fragment(R.layout.fragment_sensor) {
         binding.recyclerView.adapter = SensorListAdapter()
         binding.lifecycleOwner = this
         viewModel.refresh()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as MainActivity).gosoanNavigation.onCreateFragment(view)
+
         lifecycle.addObserver(viewModel)
+
+        viewModel.sensors.observe(viewLifecycleOwner, {
+            println(it)
+        })
 
         viewModel.sensorData.observe(viewLifecycleOwner, {
 //            binding.
-//            binding.label.text = it.toString()
         })
     }
 }

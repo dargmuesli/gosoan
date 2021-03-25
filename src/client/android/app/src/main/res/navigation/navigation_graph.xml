@@ -14,7 +14,6 @@
     <fragment
         android:id="@+id/navigation_preference"
         android:name="de.jonas_thelemann.uni.gosoan.ui.preference.PreferenceFragment"
-        android:label="@string/preferences"
-        tools:layout="@layout/fragment_preference" />
+        android:label="@string/preferences" />
 
 </navigation>

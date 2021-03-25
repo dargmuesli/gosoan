@@ -2,62 +2,73 @@ package de.jonas_thelemann.uni.gosoan.navigation
 
 import android.graphics.Color
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+import android.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import androidx.core.view.iterator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.math.MathUtils
 import com.google.android.material.navigation.NavigationView
+import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.R
+import javax.inject.Singleton
 
-class Navigation constructor(private val activity: AppCompatActivity) {
+@Singleton
+class GosoanNavigation constructor(private val activity: MainActivity) {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<NavigationView>
     private lateinit var scrim: View
 
-    fun onCreate() {
+    fun onCreateActivity() {
         activity.setContentView(R.layout.activity_main)
 
         val navigationController =
             (activity.supportFragmentManager.findFragmentById(R.id.fragment_nav_host) as NavHostFragment).navController
         val navigationView = activity.findViewById<NavigationView>(R.id.nav_view)
-        val bottomAppBar = activity.findViewById<BottomAppBar>(R.id.bottomAppBar)
 
         scrim = activity.findViewById(R.id.scrim)
         appBarConfiguration = AppBarConfiguration(navigationController.graph)
         bottomSheetBehavior = BottomSheetBehavior.from(navigationView)
+
         bottomSheetHide()
 
-        setupActionBarWithNavController(activity, navigationController, appBarConfiguration)
         navigationView.setupWithNavController(navigationController)
-        bottomAppBar.setNavigationOnClickListener {
-            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-                bottomSheetShow()
-            } else {
-                bottomSheetHide()
+        navigationController.addOnDestinationChangedListener { _, destination, _ ->
+            for (menuItem in navigationView.menu.iterator()) {
+                menuItem.isEnabled = true
             }
+
+            val menu = navigationView.menu.findItem(destination.id)
+            menu?.isEnabled = false
+            activity.findViewById<TextView>(R.id.textViewNavigation).text = navigationController.currentDestination?.label
         }
+
         scrim.setOnClickListener {
             bottomSheetHide()
         }
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val baseColor = Color.BLACK
-                val baseAlpha = ResourcesCompat.getFloat(activity.resources, R.dimen.material_emphasis_medium)
+                val baseAlpha = ResourcesCompat.getFloat(
+                    activity.resources,
+                    R.dimen.material_emphasis_medium
+                )
                 val offset = (slideOffset - (-1f)) / (1f - (-1f)) * (1f - 0f) + 0f
                 val alpha = MathUtils.lerp(0f, 255f, offset * baseAlpha).toInt()
                 val color = Color.argb(alpha, baseColor.red, baseColor.green, baseColor.blue)
                 scrim.setBackgroundColor(color)
             }
+
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     bottomSheetHide()
@@ -66,10 +77,26 @@ class Navigation constructor(private val activity: AppCompatActivity) {
         })
     }
 
+    fun onCreateFragment(view: View) {
+        val bottomAppBar = view.findViewById<BottomAppBar>(R.id.bottomAppBar) ?: return
+
+        activity.setSupportActionBar(bottomAppBar)
+
+        bottomAppBar.setNavigationOnClickListener {
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                bottomSheetShow()
+            } else {
+                bottomSheetHide()
+            }
+        }
+    }
+
     fun onSupportNavigateUp(): Boolean {
         bottomSheetHide()
-        val navController = activity.findNavController(R.id.fragment_nav_host)
-        return navController.navigateUp(appBarConfiguration)
+
+        val navigationController = activity.findNavController(R.id.fragment_nav_host)
+
+        return navigationController.navigateUp(appBarConfiguration)
     }
 
     private fun bottomSheetHide() {
