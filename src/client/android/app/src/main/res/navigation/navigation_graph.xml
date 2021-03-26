@@ -20,8 +20,8 @@
         android:name="de.jonas_thelemann.uni.gosoan.ui.preference.PreferenceWrapperFragment"
         android:label="@string/preferences">
         <argument
-            android:name="sensorId"
-            app:argType="de.jonas_thelemann.uni.gosoan.model.SensorId"
+            android:name="sensor"
+            app:argType="de.jonas_thelemann.uni.gosoan.model.GosoanSensor"
             android:defaultValue="@null"
             app:nullable="true" />
     </fragment>

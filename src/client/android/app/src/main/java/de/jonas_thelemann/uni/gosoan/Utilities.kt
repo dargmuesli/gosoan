@@ -14,3 +14,11 @@ fun <T> sourcedLiveData(vararg sources: LiveData<*>, block: () -> T?): LiveData<
             }
         }
     }
+
+class PreferenceUtil {
+    companion object {
+        fun getKey(namespace: String, id: String): String {
+            return namespace + "_" + id
+        }
+    }
+}

@@ -18,4 +18,5 @@
     <string name="search_hint">Search sensors</string>
     <string name="global">Global</string>
     <string name="override_global_preference">Override global preference</string>
+    <string name="menu">Menu</string>
 </resources>

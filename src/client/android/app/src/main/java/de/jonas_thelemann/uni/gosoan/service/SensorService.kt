@@ -20,6 +20,7 @@ class SensorService @Inject constructor(@ApplicationContext private val context:
     SensorEventListener, LiveData<GosoanSensorEvent>() {
     private lateinit var sensorManager: SensorManager // System services not available to Activities before onCreate().
     private val sensorMap: MutableMap<Int, Sensor> = mutableMapOf()
+
     @SuppressLint("InlinedApi")
     private val sensorApiMap: Map<Int, Int> = mapOf(
         Sensor.TYPE_ACCELEROMETER to 3,

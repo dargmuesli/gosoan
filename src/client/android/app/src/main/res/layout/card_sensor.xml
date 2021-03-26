@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="onClickListener"
             type="de.jonas_thelemann.uni.gosoan.ui.OnClickListener" />
 
         <variable
-            name="sensorId"
-            type="de.jonas_thelemann.uni.gosoan.model.SensorId" />
+            name="sensor"
+            type="de.jonas_thelemann.uni.gosoan.model.GosoanSensor" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -18,15 +19,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
         android:clickable="true"
         android:focusable="true"
-        card_view:cardCornerRadius="4dp"
+        android:onClick="@{() -> onClickListener.onClick(sensor)}"
+        card_view:cardBackgroundColor="@{sensor.isActive ? @color/card_enabled : @color/card_disabled}"
         card_view:layout_constraintBottom_toBottomOf="parent"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"
-        card_view:layout_constraintTop_toTopOf="parent"
-        android:onClick="@{() -> onClickListener.onClick(sensorId)}">
+        card_view:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/info_text"

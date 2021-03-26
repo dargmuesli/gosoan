@@ -16,7 +16,7 @@ class PreferenceWrapperFragment : Fragment() {
         val args = PreferenceWrapperFragmentArgs.fromBundle(requireArguments())
 
         PreferenceViewModel.Factory(
-            sensorId = args.sensorId
+            gosoanSensor = args.sensor
         )
     }
 
@@ -33,7 +33,10 @@ class PreferenceWrapperFragment : Fragment() {
 
         if (activity != null) {
             (activity as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_preference_content, PreferenceFragment(viewModel.sensorId))
+                .replace(
+                    R.id.fragment_preference_content,
+                    PreferenceFragment(viewModel.gosoanSensor)
+                )
                 .commit()
         }
 

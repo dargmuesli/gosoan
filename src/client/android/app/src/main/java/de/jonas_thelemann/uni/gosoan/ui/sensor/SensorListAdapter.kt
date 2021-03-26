@@ -1,5 +1,6 @@
 package de.jonas_thelemann.uni.gosoan.ui.sensor
 
+import android.content.Context
 import android.hardware.Sensor
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,18 +8,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import de.jonas_thelemann.uni.gosoan.databinding.CardSensorBinding
-import de.jonas_thelemann.uni.gosoan.model.SensorId
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.ui.OnClickListener
 
-class SensorListAdapter(private val onClickListener: OnClickListener<SensorId>) :
+class SensorListAdapter(private val onClickListener: OnClickListener<GosoanSensor>) :
     ListAdapter<Sensor, SensorListAdapter.ViewHolder>(DiffCallback) {
 
-    inner class ViewHolder(private val binding: CardSensorBinding) :
+    inner class ViewHolder(private val binding: CardSensorBinding, private val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(sensor: Sensor) {
             binding.infoText.text = sensor.name
-            binding.sensorId = SensorId(sensor.name, sensor.type)
+            binding.sensor = GosoanSensor(context, sensor.name, sensor.type)
             binding.onClickListener = onClickListener
             binding.executePendingBindings()
         }
@@ -36,7 +37,8 @@ class SensorListAdapter(private val onClickListener: OnClickListener<SensorId>) 
         return ViewHolder(
             CardSensorBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
-            )
+            ),
+            parent.context
         )
     }
 
