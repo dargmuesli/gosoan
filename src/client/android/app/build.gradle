@@ -66,6 +66,9 @@ dependencies {
     // Preference
     implementation "androidx.preference:preference-ktx:$preference_version"
 
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timber_version"
+
     // WebSocket
     implementation "com.neovisionaries:nv-websocket-client:$websocket_client_version"
 }

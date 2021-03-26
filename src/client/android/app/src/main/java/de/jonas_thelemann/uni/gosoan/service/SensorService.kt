@@ -2,14 +2,21 @@ package de.jonas_thelemann.uni.gosoan.service
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.lifecycle.LiveData
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.jonas_thelemann.uni.gosoan.BuildConfig
+import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getPreferenceOverride
+import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getPreferenceToggle
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
+import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_GLOBAL_ID
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -69,20 +76,6 @@ class SensorService @Inject constructor(@ApplicationContext private val context:
         // This method is willingly unused.
     }
 
-    fun onStart() {
-        for (sensorMapEntry in sensorMap) {
-            sensorManager.registerListener(
-                this, sensorMapEntry.value,
-                SENSOR_DELAY_DEFAULT
-            )
-        }
-    }
-
-    fun onStop() {
-        sensorManager.unregisterListener(this)
-    }
-
-
     fun onCreate() {
         sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
@@ -92,13 +85,13 @@ class SensorService @Inject constructor(@ApplicationContext private val context:
             val sensorNumber = sensorApiPair.key
 
             if (sensorManager.getSensorList(sensorNumber).size > 1) {
-                println("Warning: Multiple sensors found for sensor number $sensorNumber and only the default sensor is used now!")
+                Timber.w("Warning: Multiple sensors found for sensor number $sensorNumber and only the default sensor is used now!")
             }
 
             val sensor = sensorManager.getDefaultSensor(sensorNumber)
 
             if (sensor == null) {
-                println("No sensor found for sensor number ${sensorNumber}!")
+                Timber.w("No sensor found for sensor number ${sensorNumber}!")
                 continue
             }
 
@@ -106,7 +99,47 @@ class SensorService @Inject constructor(@ApplicationContext private val context:
         }
     }
 
+    fun onStart() {
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(context)
+
+        if (!getPreferenceToggle(sharedPreferences, PREFERENCE_GLOBAL_ID)) return
+
+        for (sensorMapEntry in sensorMap) {
+            val sensor = sensorMapEntry.value
+            val gosoanSensorId = GosoanSensor(context, sensor.name, sensor.type).getId()
+
+            if (getPreferenceOverride(sharedPreferences, gosoanSensorId)) {
+                if (!getPreferenceToggle(sharedPreferences, gosoanSensorId)) continue
+            }
+
+            Timber.i("Registering listener for sensor " + sensorMapEntry.value.name + " with delay " + SENSOR_DELAY_DEFAULT + ".")
+            sensorManager.registerListener(
+                this, sensorMapEntry.value,
+                SENSOR_DELAY_DEFAULT
+            )
+        }
+    }
+
+    fun onStop() {
+        Timber.i("Unregistering listeners.")
+        sensorManager.unregisterListener(this)
+    }
+
     fun getSensors(query: String = ""): List<Sensor> {
-        return sensorManager.getSensorList(Sensor.TYPE_ALL).filter { it.name.contains(query) }
+        val sensors: MutableList<Sensor> = mutableListOf()
+
+        for (sensorMapEntry in sensorMap) {
+            sensors.add(sensorMapEntry.value)
+        }
+
+        // sensorManager.getSensorList(Sensor.TYPE_ALL)
+        return sensors.filter { it.name.contains(query) }
+    }
+
+    fun restart() {
+        Timber.i("Restarting listeners.")
+        onStop()
+        onStart()
     }
 }

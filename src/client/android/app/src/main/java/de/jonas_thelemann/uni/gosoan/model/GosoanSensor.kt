@@ -18,7 +18,7 @@ data class GosoanSensor constructor(
         PreferenceManager.getDefaultSharedPreferences(context)
 
     fun getId(): String {
-        return type.toString() + "_" + name.replace("""\s""".toRegex(), "-")
+        return type.toString() + "|" + name.replace("""\s""".toRegex(), "_")
     }
 
     fun isActive(): Boolean {

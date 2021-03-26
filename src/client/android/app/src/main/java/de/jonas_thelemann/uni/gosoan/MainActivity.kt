@@ -2,11 +2,13 @@ package de.jonas_thelemann.uni.gosoan
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import de.jonas_thelemann.uni.gosoan.navigation.GosoanNavigation
 import de.jonas_thelemann.uni.gosoan.repository.SensorRepository
@@ -23,6 +25,12 @@ class MainActivity : AppCompatActivity() {
 
     val gosoanNavigation: GosoanNavigation = GosoanNavigation(this)
 
+    private lateinit var sharedPreferences: SharedPreferences
+    private val sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener {
+            sharedPreferences: SharedPreferences?, key: String? -> sensorService.restart()
+        }
+
     private var searchQuery: String = ""
 
     companion object {
@@ -38,6 +46,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
+
         gosoanNavigation.onCreateActivity()
         sensorService.onCreate()
     }
@@ -49,6 +60,19 @@ class MainActivity : AppCompatActivity() {
 
         super.onSaveInstanceState(outState)
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener)
+    }
+
 
     override fun onStart() {
         super.onStart()

@@ -58,12 +58,8 @@ class SensorFragment : Fragment(R.layout.fragment_sensor) {
 
         lifecycle.addObserver(viewModel)
 
-        viewModel.sensors.observe(viewLifecycleOwner, {
-            println(it)
-        })
-
         viewModel.sensorData.observe(viewLifecycleOwner, {
-//            binding.
+            println(it)
         })
     }
 }
