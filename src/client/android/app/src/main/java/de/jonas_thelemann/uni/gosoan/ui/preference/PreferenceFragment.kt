@@ -7,6 +7,13 @@ import androidx.core.content.ContextCompat
 import androidx.preference.*
 import de.jonas_thelemann.uni.gosoan.model.SensorId
 
+private const val SENSOR_OVERRIDE_ID = "override_global_preference"
+private const val SENSOR_TOGGLE_ID = "toggle_measurements"
+private const val SENSOR_SERVER_IP_ID = "server_ip"
+private const val SENSOR_MEASUREMENT_FREQUENCY_ID = "measurement_frequency"
+private const val SENSOR_DATA_FORMAT_ID = "data_format"
+private const val SENSOR_TRANSMISSION_METHOD_ID = "transmission_method"
+
 class PreferenceFragment(private val sensorId: SensorId?) : PreferenceFragmentCompat() {
     private val prefix = sensorId?.toString() ?: "global"
 
@@ -18,44 +25,55 @@ class PreferenceFragment(private val sensorId: SensorId?) : PreferenceFragmentCo
         screen.addPreference(category)
         category.title = sensorId?.name ?: getResourceString("global")
 
+        if (sensorId != null) {
+            val overridePreference = SwitchPreferenceCompat(context)
+            overridePreference.icon = getResourceDrawable("ic_baseline_bolt_24")
+            overridePreference.key = getKey(SENSOR_OVERRIDE_ID, prefix)
+            overridePreference.title = getResourceString(SENSOR_OVERRIDE_ID)
+            overridePreference.setDefaultValue(false)
+            category.addPreference(overridePreference)
+        }
+
         val togglePreference = SwitchPreferenceCompat(context)
         togglePreference.icon = getResourceDrawable("ic_baseline_sensors_24")
-        togglePreference.key = prefix + "_toggle"
-        togglePreference.title = getResourceString("toggle_measurements")
-        togglePreference.setDefaultValue(true)
+        togglePreference.key = getKey(SENSOR_TOGGLE_ID, prefix)
+        togglePreference.title = getResourceString(SENSOR_TOGGLE_ID)
+        togglePreference.setDefaultValue(false)
         category.addPreference(togglePreference)
 
         val serverIpPreference = EditTextPreference(context)
         serverIpPreference.icon = getResourceDrawable("ic_baseline_cloud_24")
-        serverIpPreference.key = prefix + "_server_ip"
-        serverIpPreference.title = getResourceString("server_ip")
+        serverIpPreference.key = getKey(SENSOR_SERVER_IP_ID, prefix)
+        serverIpPreference.title = getResourceString(SENSOR_SERVER_IP_ID)
         serverIpPreference.setDefaultValue("127.0.0.1")
         serverIpPreference.summaryProvider = EditTextPreference.SimpleSummaryProvider.getInstance()
         category.addPreference(serverIpPreference)
 
         val measurementFrequencyPreference = EditTextPreference(context)
         measurementFrequencyPreference.icon = getResourceDrawable("ic_baseline_timer_24")
-        measurementFrequencyPreference.key = prefix + "_measurement_frequency"
-        measurementFrequencyPreference.title = getResourceString("measurement_frequency")
+        measurementFrequencyPreference.key = getKey(SENSOR_MEASUREMENT_FREQUENCY_ID, prefix)
+        measurementFrequencyPreference.title = getResourceString(SENSOR_MEASUREMENT_FREQUENCY_ID)
         measurementFrequencyPreference.summaryProvider =
             EditTextPreference.SimpleSummaryProvider.getInstance()
         measurementFrequencyPreference.setDefaultValue("200000")
 
         val dataFormatPreference = ListPreference(context)
-        dataFormatPreference.entries = getResourceArray("format_entries")
-        dataFormatPreference.entryValues = getResourceArray("format_values")
+        dataFormatPreference.entries = getResourceArray(SENSOR_DATA_FORMAT_ID + "_entries")
+        dataFormatPreference.entryValues = getResourceArray(SENSOR_DATA_FORMAT_ID + "_values")
         dataFormatPreference.icon = getResourceDrawable("ic_baseline_text_format_24")
-        dataFormatPreference.key = prefix + "_data_format"
-        dataFormatPreference.title = getResourceString("data_format")
+        dataFormatPreference.key = getKey(SENSOR_DATA_FORMAT_ID, prefix)
+        dataFormatPreference.title = getResourceString(SENSOR_DATA_FORMAT_ID)
         dataFormatPreference.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
         dataFormatPreference.setDefaultValue("flatbuffers")
 
         val transmissionMethodPreference = ListPreference(context)
-        transmissionMethodPreference.entries = getResourceArray("transmission_entries")
-        transmissionMethodPreference.entryValues = getResourceArray("transmission_values")
+        transmissionMethodPreference.entries =
+            getResourceArray(SENSOR_TRANSMISSION_METHOD_ID + "_entries")
+        transmissionMethodPreference.entryValues =
+            getResourceArray(SENSOR_TRANSMISSION_METHOD_ID + "_values")
         transmissionMethodPreference.icon = getResourceDrawable("ic_baseline_import_export_24")
-        transmissionMethodPreference.key = prefix + "_transmission_method"
-        transmissionMethodPreference.title = getResourceString("transmission_method")
+        transmissionMethodPreference.key = getKey(SENSOR_TRANSMISSION_METHOD_ID, prefix)
+        transmissionMethodPreference.title = getResourceString(SENSOR_TRANSMISSION_METHOD_ID)
         transmissionMethodPreference.summaryProvider =
             ListPreference.SimpleSummaryProvider.getInstance()
         transmissionMethodPreference.setDefaultValue("websocket")
@@ -66,13 +84,21 @@ class PreferenceFragment(private val sensorId: SensorId?) : PreferenceFragmentCo
 
         preferenceScreen = screen
 
-        serverIpPreference.dependency = prefix + "_toggle"
-        measurementFrequencyPreference.dependency = prefix + "_toggle"
-        dataFormatPreference.dependency = prefix + "_toggle"
-        transmissionMethodPreference.dependency = prefix + "_toggle"
+        if (sensorId != null) {
+            val overrideGlobalPreferenceKey = getKey(SENSOR_OVERRIDE_ID, prefix)
 
+            togglePreference.dependency = overrideGlobalPreferenceKey
+            serverIpPreference.dependency = overrideGlobalPreferenceKey
+            measurementFrequencyPreference.dependency = overrideGlobalPreferenceKey
+            dataFormatPreference.dependency = overrideGlobalPreferenceKey
+            transmissionMethodPreference.dependency = overrideGlobalPreferenceKey
+        }
 
-//        setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        val toggleMeasurementsKey = getKey(SENSOR_TOGGLE_ID, prefix)
+        serverIpPreference.dependency = toggleMeasurementsKey
+        measurementFrequencyPreference.dependency = toggleMeasurementsKey
+        dataFormatPreference.dependency = toggleMeasurementsKey
+        transmissionMethodPreference.dependency = toggleMeasurementsKey
 
         val countingPreference: EditTextPreference? =
             findPreference(prefix + "_measurement_frequency")
@@ -86,6 +112,10 @@ class PreferenceFragment(private val sensorId: SensorId?) : PreferenceFragmentCo
                     "$text ms"
                 }
             }
+    }
+
+    private fun getKey(id: String, namespace: String): String {
+        return namespace + "_" + id
     }
 
     private fun getResourceArray(id: String): Array<out String> {

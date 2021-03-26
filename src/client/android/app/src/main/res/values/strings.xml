@@ -17,4 +17,5 @@
     <string name="unable_to_fetch_sensors">Unable to fetch sensors</string>
     <string name="search_hint">Search sensors</string>
     <string name="global">Global</string>
+    <string name="override_global_preference">Override global preference</string>
 </resources>

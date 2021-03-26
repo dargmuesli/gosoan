@@ -7,6 +7,6 @@ data class SensorId constructor(
     val type: Int,
 ) : Serializable {
     override fun toString(): String {
-        return type.toString() + name.replace("""\s""".toRegex(), "-")
+        return type.toString() + "_" + name.replace("""\s""".toRegex(), "-")
     }
 }

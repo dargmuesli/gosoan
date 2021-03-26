@@ -1,21 +1,21 @@
 <resources>
-    <string-array name="format_entries">
+    <string-array name="data_format_entries">
         <item>Flatbuffers</item>
         <item>JSON</item>
     </string-array>
 
-    <string-array name="format_values">
+    <string-array name="data_format_values">
         <item>flatbuffers</item>
         <item>json</item>
     </string-array>
 
-    <string-array name="transmission_entries">
+    <string-array name="transmission_method_entries">
         <item>WebSocket (TCP)</item>
         <item>TCP</item>
         <item>UDP</item>
     </string-array>
 
-    <string-array name="transmission_values">
+    <string-array name="transmission_method_values">
         <item>websocket</item>
         <item>tcp</item>
         <item>udp</item>
