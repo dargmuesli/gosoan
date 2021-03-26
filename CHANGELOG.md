@@ -1,3 +1,11 @@
+# [0.6.0](https://github.com/dargmuesli/gosoan/compare/0.5.0...0.6.0) (2021-03-26)
+
+
+### Features
+
+* **android:** add card colors ([939ac84](https://github.com/dargmuesli/gosoan/commit/939ac841a989e3749ae77689411dbfa20c3b0af9))
+* **android:** add override preferences ([4d5bda8](https://github.com/dargmuesli/gosoan/commit/4d5bda867f9824b532009f83b47b143fad206ee1))
+
 # [0.5.0](https://github.com/dargmuesli/gosoan/compare/0.4.0...0.5.0) (2021-03-25)
 
 
