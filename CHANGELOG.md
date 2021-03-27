@@ -1,3 +1,11 @@
+# [0.7.0](https://github.com/dargmuesli/gosoan/compare/0.6.0...0.7.0) (2021-03-27)
+
+
+### Features
+
+* **android:** implement service ([8b323e1](https://github.com/dargmuesli/gosoan/commit/8b323e16b6d5fe65d2b504c3774d648090001053))
+* **android:** restart listeners depending on preferences ([ae0e9aa](https://github.com/dargmuesli/gosoan/commit/ae0e9aa5bbe4dcbf30ef560e001b949c28bab2a8))
+
 # [0.6.0](https://github.com/dargmuesli/gosoan/compare/0.5.0...0.6.0) (2021-03-26)
 
 
