@@ -116,7 +116,7 @@ class PreferenceFragment(private val gosoanSensor: GosoanSensor?) : PreferenceFr
                 if (TextUtils.isEmpty(text)) {
                     "Not set"
                 } else {
-                    "$text ms"
+                    "$text µs"
                 }
             }
     }

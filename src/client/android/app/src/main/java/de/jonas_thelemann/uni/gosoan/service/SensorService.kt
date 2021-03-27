@@ -16,20 +16,12 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import de.jonas_thelemann.uni.gosoan.BuildConfig
-import de.jonas_thelemann.uni.gosoan.MainActivity
-import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getPreferenceOverride
-import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getPreferenceToggle
-import de.jonas_thelemann.uni.gosoan.R
-import de.jonas_thelemann.uni.gosoan.createNotificationChannel
+import de.jonas_thelemann.uni.gosoan.*
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
-import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_GLOBAL_ID
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val SENSOR_DELAY_DEFAULT = SensorManager.SENSOR_DELAY_NORMAL
 
 @Singleton
 class SensorService @Inject constructor() : SensorEventListener, Service() {
@@ -94,22 +86,14 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
 
         private fun isCreatable(context: Context): Boolean {
             val sensorMap = getSensorMap(context)
-            val sharedPreferences: SharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(context)
-
-            if (!getPreferenceToggle(sharedPreferences, PREFERENCE_GLOBAL_ID)) {
-                return false
-            }
 
             for (sensorMapEntry in sensorMap) {
                 val sensor = sensorMapEntry.value
-                val gosoanSensorId = GosoanSensor(context, sensor.name, sensor.type).getId()
+                val gosoanSensor = GosoanSensor(context, sensor.name, sensor.type)
 
-                if (getPreferenceOverride(sharedPreferences, gosoanSensorId)) {
-                    if (!getPreferenceToggle(sharedPreferences, gosoanSensorId)) continue
+                if (gosoanSensor.isActive()) {
+                    return true
                 }
-
-                return true
             }
 
             return false
@@ -171,18 +155,31 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
                 .build()
 
         startForeground(R.string.NOTIFICATION_ID, notification)
+
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(this)
+
         val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
 
         for (sensorMapEntry in getSensorMap(this)) {
+            val gosoanSensor =
+                GosoanSensor(this, sensorMapEntry.value.name, sensorMapEntry.value.type)
+
+            if (!gosoanSensor.isActive()) continue
+            val measurementFrequency =
+                PreferenceUtil.getPreferenceMeasurementFrequency(
+                    sharedPreferences,
+                    gosoanSensor.getId()
+                )
+
             Timber.i(
                 "Registering listener for sensor %s with delay %s.",
                 sensorMapEntry.value.name,
-                SENSOR_DELAY_DEFAULT
+                measurementFrequency
             )
-
             sensorManager.registerListener(
                 this, sensorMapEntry.value,
-                SENSOR_DELAY_DEFAULT
+                measurementFrequency
             )
         }
 

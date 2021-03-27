@@ -6,11 +6,13 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.hardware.SensorManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_GLOBAL_ID
+import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID
 import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_OVERRIDE_ID
 import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_TOGGLE_ID
 
@@ -47,6 +49,16 @@ class PreferenceUtil {
                 getKey(namespace, PREFERENCE_SENSOR_TOGGLE_ID),
                 namespace == PREFERENCE_GLOBAL_ID
             )
+        }
+
+        fun getPreferenceMeasurementFrequency(
+            sharedPreferences: SharedPreferences,
+            namespace: String
+        ): Int {
+            return sharedPreferences.getString(
+                getKey(namespace, PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID),
+                SensorManager.SENSOR_DELAY_NORMAL.toString()
+            )?.toInt() ?: SensorManager.SENSOR_DELAY_NORMAL
         }
     }
 }
