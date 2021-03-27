@@ -2,6 +2,7 @@ package de.jonas_thelemann.uni.gosoan
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
@@ -18,17 +19,14 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     @Inject
-    lateinit var sensorService: SensorService
-
-    @Inject
     lateinit var sensorRepository: SensorRepository
 
     val gosoanNavigation: GosoanNavigation = GosoanNavigation(this)
 
     private lateinit var sharedPreferences: SharedPreferences
     private val sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener {
-            sharedPreferences: SharedPreferences?, key: String? -> sensorService.restart()
+        SharedPreferences.OnSharedPreferenceChangeListener { _: SharedPreferences?, _: String? ->
+            SensorService.restart(this)
         }
 
     private var searchQuery: String = ""
@@ -50,7 +48,18 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
 
         gosoanNavigation.onCreateActivity()
-        sensorService.onCreate()
+
+        SensorService.start(this)
+    }
+
+//    override fun onStart() {
+//        super.onStart()
+//    }
+
+    override fun onResume() {
+        super.onResume()
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -61,29 +70,21 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
-    }
-
     override fun onPause() {
         super.onPause()
 
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener)
     }
 
+//    override fun onStop() {
+//        super.onStop()
+////        sensorService.onStop()
+//    }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onDestroy() {
+        super.onDestroy()
 
-        sensorService.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        sensorService.onStop()
+        stopService(Intent(this, SensorService::class.java))
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         val textChangeListener: OnQueryTextListener = object : OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
                 searchQuery = query
-                sensorRepository.fetchSensors(query)
+                sensorRepository.fetchSensors(applicationContext, query)
                 return false
             }
 

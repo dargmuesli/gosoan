@@ -46,7 +46,7 @@ class SensorFragment : Fragment(R.layout.fragment_sensor) {
             findNavController().navigate(action)
         })
         binding.lifecycleOwner = this
-        viewModel.refresh()
+        viewModel.refresh(requireContext())
 
         return binding.root
     }
@@ -57,9 +57,5 @@ class SensorFragment : Fragment(R.layout.fragment_sensor) {
         (activity as MainActivity).gosoanNavigation.onCreateFragment(view)
 
         lifecycle.addObserver(viewModel)
-
-        viewModel.sensorData.observe(viewLifecycleOwner, {
-            println(it)
-        })
     }
 }
