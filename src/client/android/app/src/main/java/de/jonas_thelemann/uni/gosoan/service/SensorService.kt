@@ -1,5 +1,6 @@
 package de.jonas_thelemann.uni.gosoan.service
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
@@ -7,24 +8,30 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.IBinder
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import de.jonas_thelemann.uni.gosoan.*
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
+import de.jonas_thelemann.uni.gosoan.service.LocationService.Companion.checkPermissions
+import de.jonas_thelemann.uni.gosoan.service.LocationService.Companion.requestPermissions
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SensorService @Inject constructor() : SensorEventListener, Service() {
+    private lateinit var sharedPreferences: SharedPreferences
+
     companion object {
         @SuppressLint("InlinedApi")
         private val sensorApiMap: Map<Int, Int> = mapOf(
@@ -84,14 +91,19 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
             return sensorMap
         }
 
+        fun getLocationServiceGosoanSensor(context: Context): GosoanSensor = GosoanSensor(
+            context.getString(R.string.location_service),
+            context.getString(R.string.location_service_type_number).toInt()
+        )
+
         private fun isCreatable(context: Context): Boolean {
             val sensorMap = getSensorMap(context)
 
             for (sensorMapEntry in sensorMap) {
                 val sensor = sensorMapEntry.value
-                val gosoanSensor = GosoanSensor(context, sensor.name, sensor.type)
+                val gosoanSensor = GosoanSensor(sensor.name, sensor.type)
 
-                if (gosoanSensor.isActive()) {
+                if (gosoanSensor.isActive(context)) {
                     return true
                 }
             }
@@ -156,16 +168,29 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
 
         startForeground(R.string.NOTIFICATION_ID, notification)
 
-        val sharedPreferences: SharedPreferences =
+        sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this)
 
         val sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
 
         for (sensorMapEntry in getSensorMap(this)) {
-            val gosoanSensor =
-                GosoanSensor(this, sensorMapEntry.value.name, sensorMapEntry.value.type)
+            tryRegisterListener(this, GosoanSensor(sensorMapEntry.value.name, sensorMapEntry.value.type)) {
+                sensorManager.registerListener(
+                    this, sensorMapEntry.value,
+                    it
+                )
+            }
+        }
 
-            if (!gosoanSensor.isActive()) continue
+        tryRegisterListener(this, getLocationServiceGosoanSensor(this)) {
+            TODO()
+        }
+
+        return START_STICKY
+    }
+
+    private fun tryRegisterListener(context: Context, gosoanSensor: GosoanSensor, registrationCallback: (measurementFrequency: Int) -> Unit) {
+        if (gosoanSensor.isActive(context)) {
             val measurementFrequency =
                 PreferenceUtil.getPreferenceMeasurementFrequency(
                     sharedPreferences,
@@ -174,16 +199,11 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
 
             Timber.i(
                 "Registering listener for sensor %s with delay %s.",
-                sensorMapEntry.value.name,
+                gosoanSensor.name,
                 measurementFrequency
             )
-            sensorManager.registerListener(
-                this, sensorMapEntry.value,
-                measurementFrequency
-            )
+            registrationCallback(measurementFrequency)
         }
-
-        return START_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -221,14 +241,100 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
 //        stopSelf()
 //    }
 
-    fun getSensors(context: Context, query: String = ""): List<Sensor> {
-        val sensors: MutableList<Sensor> = mutableListOf()
+    fun getSensors(context: Context, query: String = ""): List<GosoanSensor> {
+        val sensors: MutableList<GosoanSensor> = mutableListOf()
 
         for (sensorMapEntry in getSensorMap(context)) {
-            sensors.add(sensorMapEntry.value)
+            sensors.add(GosoanSensor(sensorMapEntry.value.name, sensorMapEntry.value.type))
         }
 
-        // sensorManager.getSensorList(Sensor.TYPE_ALL)
+        sensors.add(getLocationServiceGosoanSensor(context))
+
         return sensors.filter { it.name.contains(query) }
+    }
+
+    abstract inner class LocationService {
+//        private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+//        private var locationRequest: LocationRequest = LocationRequest.create().apply {
+//            interval = TimeUnit.SECONDS.toMillis(60)
+//            fastestInterval = TimeUnit.SECONDS.toMillis(30)
+//            maxWaitTime = TimeUnit.MINUTES.toMillis(2)
+//            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+//        }
+//        private var locationCallback: LocationCallback = object : LocationCallback() {
+//            override fun onLocationResult(locationResult: LocationResult) {
+//                super.onLocationResult(locationResult)
+//
+//                // Normally, you want to save a new location to a database. We are simplifying
+//                // things a bit and just saving it as a local variable, as we only need it again
+//                // if a Notification is created (when the user navigates away from app).
+//                currentLocation = locationResult.lastLocation
+//
+//                // Notify our Activity that a new location was added. Again, if this was a
+//                // production app, the Activity would be listening for changes to a database
+//                // with new locations, but we are simplifying things a bit to focus on just
+//                // learning the location side of things.
+//                val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
+//                intent.putExtra(EXTRA_LOCATION, currentLocation)
+//                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
+//
+//                // Updates notification content if this service is running as a foreground
+//                // service.
+//                if (serviceRunningInForeground) {
+//                    notificationManager.notify(
+//                        NOTIFICATION_ID,
+//                        generateNotification(currentLocation))
+//                }
+//            }
+//        }
+//
+//        private var currentLocation: Location? = null
+//
+//        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+//        val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+//        removeTask.addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                Log.d(TAG, "Location Callback removed.")
+//                stopSelf()
+//            } else {
+//                Log.d(TAG, "Failed to remove Location Callback.")
+//            }
+//        }
+//
+//        override fun onCreate() {
+//            super.onCreate()
+//
+//            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+//        }
+//
+//        override fun onStart() {
+//            super.onStart()
+//
+//            if (!checkPermissions()) {
+//                requestPermissions()
+//            } else {
+//                getLastLocation()
+//            }
+//        }
+//
+//        override fun onBind(intent: Intent?): IBinder? {
+//            TODO("Not yet implemented")
+//        }
+//
+//        private fun getLastLocation() {
+//            fusedLocationProviderClient.lastLocation
+//                .addOnCompleteListener { taskLocation ->
+//                    if (taskLocation.isSuccessful && taskLocation.result != null) {
+//
+//                        val location = taskLocation.result
+//
+//                        println(location?.latitude)
+//                        println(location?.longitude)
+//                    } else {
+//                        Timber.w("getLastLocation:exception", taskLocation.exception)
+//                        showSnackbar(R.string.no_location_detected)
+//                    }
+//                }
+//        }
     }
 }

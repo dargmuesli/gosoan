@@ -4,6 +4,7 @@ import android.content.Context
 import android.hardware.Sensor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.service.SensorService
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,14 +23,14 @@ class SensorRepository @Inject constructor(private val sensorService: SensorServ
     }
     val state: LiveData<State> = _state
 
-    private val _sensors = MutableLiveData<List<Sensor>>()
-    val sensors: LiveData<List<Sensor>> = _sensors
+    private val _gosoanSensors = MutableLiveData<List<GosoanSensor>>()
+    val gosoanSensors: LiveData<List<GosoanSensor>> = _gosoanSensors
 
     fun fetchSensors(context: Context, query: String = "") {
         try {
             _state.postValue(State.Refreshing)
             val sensors = sensorService.getSensors(context, query)
-            _sensors.postValue(sensors)
+            _gosoanSensors.postValue(sensors)
 
             if (sensors.isEmpty()) {
                 _state.postValue(State.Empty)

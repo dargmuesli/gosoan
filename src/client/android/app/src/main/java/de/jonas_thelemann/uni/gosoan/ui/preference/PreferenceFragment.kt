@@ -16,8 +16,21 @@ const val PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID = "measurement_frequency"
 const val PREFERENCE_SENSOR_DATA_FORMAT_ID = "data_format"
 const val PREFERENCE_SENSOR_TRANSMISSION_METHOD_ID = "transmission_method"
 
-class PreferenceFragment(private val gosoanSensor: GosoanSensor?) : PreferenceFragmentCompat() {
-    private val prefix = gosoanSensor?.getId() ?: PREFERENCE_GLOBAL_ID
+class PreferenceFragment() : PreferenceFragmentCompat() {
+    private var gosoanSensor: GosoanSensor? = null
+    private lateinit var prefix: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val gosoanSensorArg = arguments?.getSerializable("gosoanSensor")
+
+        if (gosoanSensorArg != null) {
+            gosoanSensor = gosoanSensorArg as GosoanSensor
+        }
+
+        prefix = gosoanSensor?.getId() ?: PREFERENCE_GLOBAL_ID
+
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         val context = preferenceManager.context

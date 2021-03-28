@@ -29,7 +29,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    visible="@{viewModel.sensors.size() == 0}"
+                    visible="@{viewModel.gosoanSensors.size() == 0}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/empty_hint"
@@ -40,8 +40,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
-                    sensors="@{viewModel.sensors}"
-                    visible="@{viewModel.sensors.size() > 0}"
+                    gosoanSensors="@{viewModel.gosoanSensors}"
+                    visible="@{viewModel.gosoanSensors.size() > 0}"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

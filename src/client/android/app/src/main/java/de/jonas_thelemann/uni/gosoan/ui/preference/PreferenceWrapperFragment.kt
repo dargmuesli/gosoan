@@ -32,10 +32,14 @@ class PreferenceWrapperFragment : Fragment() {
         binding.lifecycleOwner = this
 
         if (activity != null) {
+                val preferenceFragment = PreferenceFragment()
+            val args = Bundle()
+            args.putSerializable("gosoanSensor", viewModel.gosoanSensor)
+            preferenceFragment.arguments = args
             (activity as FragmentActivity).supportFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_preference_content,
-                    PreferenceFragment(viewModel.gosoanSensor)
+                    preferenceFragment
                 )
                 .commit()
         }

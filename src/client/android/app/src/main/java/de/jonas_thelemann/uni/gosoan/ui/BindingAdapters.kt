@@ -1,10 +1,10 @@
 package de.jonas_thelemann.uni.gosoan.ui
 
-import android.hardware.Sensor
 import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.ui.sensor.SensorListAdapter
 
 @BindingAdapter("visible")
@@ -19,8 +19,8 @@ fun SwipeRefreshLayout.bindRefreshListener(listener: Runnable) {
     }
 }
 
-@BindingAdapter("sensors")
-fun RecyclerView.bindSensors(sensors: List<Sensor>?) {
+@BindingAdapter("gosoanSensors")
+fun RecyclerView.bindSensors(gosoanSensors: List<GosoanSensor>?) {
     val adapter = adapter as SensorListAdapter
-    adapter.submitList(sensors)
+    adapter.submitList(gosoanSensors)
 }

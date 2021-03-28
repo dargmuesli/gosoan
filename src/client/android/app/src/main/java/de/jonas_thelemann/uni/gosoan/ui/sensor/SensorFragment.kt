@@ -39,9 +39,9 @@ class SensorFragment : Fragment(R.layout.fragment_sensor) {
 
         binding = FragmentSensorBinding.inflate(inflater)
         binding.viewModel = viewModel
-        binding.recyclerView.adapter = SensorListAdapter(OnClickListener { sensor ->
+        binding.recyclerView.adapter = SensorListAdapter(OnClickListener { gosoanSensor ->
             val action = SensorFragmentDirections.actionNavigationSensorToNavigationPreference(
-                sensor
+                gosoanSensor
             )
             findNavController().navigate(action)
         })

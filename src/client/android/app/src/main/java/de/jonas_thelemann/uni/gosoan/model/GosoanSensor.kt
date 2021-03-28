@@ -10,18 +10,17 @@ import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_TOGGLE_ID
 import java.io.Serializable
 
 data class GosoanSensor constructor(
-    private val context: Context,
     val name: String,
     val type: Int
 ) : Serializable {
-    private val sharedPreferences: SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context)
-
     fun getId(): String {
         return type.toString() + "|" + name.replace("""\s""".toRegex(), "_")
     }
 
-    fun isActive(): Boolean {
+    fun isActive(context: Context): Boolean {
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(context)
+
         val preferenceGlobalToggle = sharedPreferences.getBoolean(
             getKey(PREFERENCE_GLOBAL_ID, PREFERENCE_SENSOR_TOGGLE_ID),
             true

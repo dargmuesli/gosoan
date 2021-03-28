@@ -28,8 +28,6 @@ class GosoanNavigation constructor(private val activity: MainActivity) {
     private lateinit var scrim: View
 
     fun onCreateActivity() {
-        activity.setContentView(R.layout.activity_main)
-
         navigationController =
             (activity.supportFragmentManager.findFragmentById(R.id.fragment_nav_host) as NavHostFragment).navController
         val navigationView = activity.findViewById<NavigationView>(R.id.nav_view)

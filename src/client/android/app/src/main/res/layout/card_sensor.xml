@@ -10,7 +10,7 @@
             type="de.jonas_thelemann.uni.gosoan.ui.OnClickListener" />
 
         <variable
-            name="sensor"
+            name="gosoanSensor"
             type="de.jonas_thelemann.uni.gosoan.model.GosoanSensor" />
     </data>
 
@@ -27,8 +27,8 @@
         android:layout_marginBottom="4dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> onClickListener.onClick(sensor)}"
-        card_view:cardBackgroundColor="@{sensor.isActive ? @color/card_enabled : @color/card_disabled}"
+        android:onClick="@{() -> onClickListener.onClick(gosoanSensor)}"
+        card_view:cardBackgroundColor="@{gosoanSensor.isActive(context) ? @color/card_enabled : @color/card_disabled}"
         card_view:layout_constraintBottom_toBottomOf="parent"
         card_view:layout_constraintEnd_toEndOf="parent"
         card_view:layout_constraintStart_toStartOf="parent"

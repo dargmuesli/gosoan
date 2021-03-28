@@ -12,7 +12,7 @@ import javax.inject.Inject
 class SensorViewModel @Inject constructor(
     private val sensorRepository: SensorRepository
 ) : LifecycleObserver, ViewModel() {
-    val sensors = sensorRepository.sensors
+    val gosoanSensors = sensorRepository.gosoanSensors
 
     private val _state = sensorRepository.state
     val refreshing = _state.map { it === SensorRepository.State.Refreshing }
