@@ -1,3 +1,12 @@
+# [0.8.0](https://github.com/dargmuesli/gosoan/compare/0.7.0...0.8.0) (2021-03-31)
+
+
+### Features
+
+* **android:** add location service ([33186ea](https://github.com/dargmuesli/gosoan/commit/33186eafe8b454c48b0f9d2087330176c40e633c))
+* **android:** add location service ([6eb386e](https://github.com/dargmuesli/gosoan/commit/6eb386ee12102ddd4a8db583ac7a672d2b02a4ea))
+* **android:** respect measurement frequency ([ff0bdfb](https://github.com/dargmuesli/gosoan/commit/ff0bdfb094e8d15a38b19dd7caf37167f614fd11))
+
 # [0.7.0](https://github.com/dargmuesli/gosoan/compare/0.6.0...0.7.0) (2021-03-27)
 
 
