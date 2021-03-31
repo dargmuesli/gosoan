@@ -1,3 +1,10 @@
+## [0.8.1](https://github.com/dargmuesli/gosoan/compare/0.8.0...0.8.1) (2021-03-31)
+
+
+### Bug Fixes
+
+* **sensor-service:** check permissions in creatable check ([f226d09](https://github.com/dargmuesli/gosoan/commit/f226d09b5986057eee0c551968c11a3de95fb070))
+
 # [0.8.0](https://github.com/dargmuesli/gosoan/compare/0.7.0...0.8.0) (2021-03-31)
 
 
