@@ -1,12 +1,16 @@
 package de.jonas_thelemann.uni.gosoan.ui.preference
 
+import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import androidx.preference.*
+import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getKey
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
+import de.jonas_thelemann.uni.gosoan.service.LocationService
+import de.jonas_thelemann.uni.gosoan.service.SensorService
 
 const val PREFERENCE_GLOBAL_ID = "global"
 const val PREFERENCE_SENSOR_OVERRIDE_ID = "override_global_preference"
@@ -16,7 +20,9 @@ const val PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID = "measurement_frequency"
 const val PREFERENCE_SENSOR_DATA_FORMAT_ID = "data_format"
 const val PREFERENCE_SENSOR_TRANSMISSION_METHOD_ID = "transmission_method"
 
-class PreferenceFragment() : PreferenceFragmentCompat() {
+class PreferenceFragment : PreferenceFragmentCompat(),
+    SharedPreferences.OnSharedPreferenceChangeListener {
+
     private var gosoanSensor: GosoanSensor? = null
     private lateinit var prefix: String
 
@@ -132,6 +138,35 @@ class PreferenceFragment() : PreferenceFragmentCompat() {
                     "$text µs"
                 }
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (sharedPreferences == null) return
+
+        val locationServiceKey = getKey(
+            SensorService.getLocationServiceGosoanSensor(requireContext()).getId(),
+            PREFERENCE_SENSOR_TOGGLE_ID
+        )
+
+        if (key == locationServiceKey && sharedPreferences.getBoolean(
+                key,
+                false
+            ) && !LocationService.checkPermissions(requireContext())
+        ) {
+            preferenceManager.findPreference<SwitchPreferenceCompat>(locationServiceKey)?.isChecked =
+                false
+            LocationService.requestPermissions(requireActivity() as MainActivity)
+        }
     }
 
     private fun getResourceArray(id: String): Array<out String> {

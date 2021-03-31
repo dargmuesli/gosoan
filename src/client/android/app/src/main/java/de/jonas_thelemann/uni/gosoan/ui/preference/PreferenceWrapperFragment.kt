@@ -32,7 +32,7 @@ class PreferenceWrapperFragment : Fragment() {
         binding.lifecycleOwner = this
 
         if (activity != null) {
-                val preferenceFragment = PreferenceFragment()
+            val preferenceFragment = PreferenceFragment()
             val args = Bundle()
             args.putSerializable("gosoanSensor", viewModel.gosoanSensor)
             preferenceFragment.arguments = args

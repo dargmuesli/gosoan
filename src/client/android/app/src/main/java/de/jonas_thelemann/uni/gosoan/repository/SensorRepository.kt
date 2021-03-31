@@ -1,7 +1,6 @@
 package de.jonas_thelemann.uni.gosoan.repository
 
 import android.content.Context
-import android.hardware.Sensor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
