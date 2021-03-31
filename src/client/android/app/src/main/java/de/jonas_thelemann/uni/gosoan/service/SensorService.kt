@@ -101,7 +101,10 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
                 }
             }
 
-            if (getLocationServiceGosoanSensor(context).isActive(context)) {
+            if (LocationService.checkPermissions(context) && getLocationServiceGosoanSensor(context).isActive(
+                    context
+                )
+            ) {
                 return true
             }
 
