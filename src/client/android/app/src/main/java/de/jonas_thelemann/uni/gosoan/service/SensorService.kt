@@ -16,13 +16,16 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.AndroidEntryPoint
 import de.jonas_thelemann.uni.gosoan.*
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
-import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
+import de.jonas_thelemann.uni.gosoan.networking.WebSocketClient
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@AndroidEntryPoint
 @Singleton
 class SensorService @Inject constructor() : SensorEventListener, Service() {
     companion object {
@@ -130,19 +133,24 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
         }
     }
 
+    @Inject
+    lateinit var webSocketClient: WebSocketClient
+
+    @Inject
+    lateinit var locationService: LocationService
+
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var locationService: LocationService
 
     override fun onCreate() {
         super.onCreate()
 
         sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this)
-        locationService = LocationService()
 
         Timber.i("Service created.")
     }
 
+    @ExperimentalUnsignedTypes
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Timber.i("Received start id %s: %s", startId, intent)
 
@@ -223,6 +231,7 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
         return null
     }
 
+    @ExperimentalUnsignedTypes
     override fun onDestroy() {
         super.onDestroy()
         Timber.i("Unregistering listeners.")
@@ -231,16 +240,18 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
         Timber.i("Service Stopped.")
     }
 
+    @ExperimentalUnsignedTypes
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
 
-        println(
-            GosoanSensorEvent(
-                event.accuracy,
-                event.sensor.name,
-                event.timestamp,
+        webSocketClient.send(
+            getGosoanSensorEventAsByteArray(
                 event.sensor.type,
-                event.values
+                event.sensor.name,
+                event.values,
+                event.accuracy,
+                (Date().time
+                        + (event.timestamp - System.nanoTime()) / 1000000L),
             )
         )
     }

@@ -1,9 +1,9 @@
 package main
 
-import "fmt"
-
-import "rsc.io/quote"
+import (
+	Gosoan "github.com/dargmuesli/gosoan/de/jonas_thelemann/uni/gosoan"
+)
 
 func main() {
-	fmt.Println(quote.Go())
+	Gosoan.WebSocketServer()
 }

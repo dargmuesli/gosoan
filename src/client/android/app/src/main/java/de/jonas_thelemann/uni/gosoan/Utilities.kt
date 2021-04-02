@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.google.android.material.snackbar.Snackbar
+import com.google.flatbuffers.FlatBufferBuilder
+import de.jonas_thelemann.uni.gosoan.generated.GosoanSensorEvent
 import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID
 
 
@@ -74,4 +76,27 @@ fun showSnackbar(
         snackbar.setAction(context.getString(actionStrId), listener)
     }
     snackbar.show()
+}
+
+@ExperimentalUnsignedTypes
+fun getGosoanSensorEventAsByteArray(
+    sensorType: Int,
+    sensorName: String,
+    values: FloatArray,
+    accuracy: Int,
+    timestamp: Long
+): ByteArray {
+    val fb = FlatBufferBuilder(128)
+    val sensorNameOffset = fb.createString(sensorName)
+    val valuesOffset = GosoanSensorEvent.createValuesVector(fb, values)
+    val gosoanSensorEventOffset = GosoanSensorEvent.createGosoanSensorEvent(
+        fb,
+        sensorType,
+        sensorNameOffset,
+        valuesOffset,
+        accuracy,
+        timestamp
+    )
+    fb.finish(gosoanSensorEventOffset)
+    return fb.sizedByteArray()
 }

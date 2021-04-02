@@ -20,6 +20,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "int", "MIN_SDK_VERSION", "$minSdkVersion.apiLevel"
+        buildConfigField "String", "SERVER_IP", "\"10.0.2.2\""
+        buildConfigField "int", "SERVER_PORT_WEBSOCKET", "8783"
     }
     buildTypes {
         release {
@@ -50,6 +52,9 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$junit_test_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 
+    // Flatbuffers
+    implementation 'com.google.flatbuffers:flatbuffers-java:1.12.0'
+
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
@@ -71,5 +76,5 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timber_version"
 
     // WebSocket
-    implementation "com.neovisionaries:nv-websocket-client:$websocket_client_version"
+    implementation "org.java-websocket:Java-WebSocket:$websocket_client_version"
 }

@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
+import android.view.View
 import android.widget.SearchView
 import android.widget.SearchView.OnQueryTextListener
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import de.jonas_thelemann.uni.gosoan.navigation.GosoanNavigation
+import de.jonas_thelemann.uni.gosoan.networking.WebSocketClient
 import de.jonas_thelemann.uni.gosoan.repository.SensorRepository
 import de.jonas_thelemann.uni.gosoan.service.REQUEST_PERMISSIONS_REQUEST_CODE
 import de.jonas_thelemann.uni.gosoan.service.SensorService
@@ -27,11 +29,14 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var sensorRepository: SensorRepository
 
+    @Inject
+    lateinit var webSocketClient: WebSocketClient
+
     val gosoanNavigation: GosoanNavigation = GosoanNavigation(this)
 
     private lateinit var sharedPreferences: SharedPreferences
     private val sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences: SharedPreferences?, key: String? ->
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences: SharedPreferences?, _: String? ->
             if (sharedPreferences == null) return@OnSharedPreferenceChangeListener
 
             SensorService.restart(this)
@@ -57,6 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
+
+        webSocketClient.connect()
 
         SensorService.start(this)
     }
@@ -147,16 +154,17 @@ class MainActivity : AppCompatActivity() {
                     this,
                     R.string.permission_denied_explanation,
                     R.string.settings,
-                    Snackbar.LENGTH_INDEFINITE
-                ) {
-                    // Build intent that displays the App settings screen.
-                    val intent = Intent().apply {
-                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    Snackbar.LENGTH_INDEFINITE,
+                    View.OnClickListener {
+                        // Build intent that displays the App settings screen.
+                        val intent = Intent().apply {
+                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        }
+                        startActivity(intent)
                     }
-                    startActivity(intent)
-                }
+                )
             }
         }
     }

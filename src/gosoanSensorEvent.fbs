@@ -1,0 +1,9 @@
+namespace de.jonas_thelemann.uni.gosoan.generated;
+table GosoanSensorEvent {
+  sensor_type:int;
+  sensor_name:string;
+  values:[float];
+  accuracy:int;
+  timestamp:long;
+}
+root_type GosoanSensorEvent;

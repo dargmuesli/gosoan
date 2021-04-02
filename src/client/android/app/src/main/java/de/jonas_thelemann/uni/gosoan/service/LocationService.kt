@@ -6,18 +6,23 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Looper
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import de.jonas_thelemann.uni.gosoan.R
+import de.jonas_thelemann.uni.gosoan.getGosoanSensorEventAsByteArray
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
+import de.jonas_thelemann.uni.gosoan.networking.WebSocketClient
 import de.jonas_thelemann.uni.gosoan.showSnackbar
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 const val REQUEST_PERMISSIONS_REQUEST_CODE = 34
 
-class LocationService {
+class LocationService @Inject constructor() {
     companion object {
         fun checkPermissions(context: Context) =
             ActivityCompat.checkSelfPermission(
@@ -36,11 +41,12 @@ class LocationService {
                     activity,
                     R.string.permission_rationale,
                     android.R.string.ok,
-                    Snackbar.LENGTH_INDEFINITE
-                ) {
-                    // Request permission
-                    startLocationPermissionRequest(activity)
-                }
+                    Snackbar.LENGTH_INDEFINITE,
+                    View.OnClickListener {
+                        // Request permission
+                        startLocationPermissionRequest(activity)
+                    }
+                )
             } else {
                 Timber.i("Requesting permission")
                 startLocationPermissionRequest(activity)
@@ -55,13 +61,30 @@ class LocationService {
         }
     }
 
-    private lateinit var locationRequest: LocationRequest
+    @Inject
+    lateinit var webSocketClient: WebSocketClient
 
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationServiceGosoanSensor: GosoanSensor
+
+    @ExperimentalUnsignedTypes
     private var locationCallback: LocationCallback = object : LocationCallback() {
+
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
 
-            println(locationResult.lastLocation)
+            webSocketClient.send(
+                getGosoanSensorEventAsByteArray(
+                    locationServiceGosoanSensor.type,
+                    locationServiceGosoanSensor.name,
+                    floatArrayOf(
+                        locationResult.lastLocation.latitude.toFloat(),
+                        locationResult.lastLocation.longitude.toFloat()
+                    ),
+                    locationResult.lastLocation.accuracy.toInt(),
+                    locationResult.lastLocation.time
+                )
+            )
         }
     }
 
@@ -69,9 +92,11 @@ class LocationService {
 
     fun onCreate(context: Context) {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+        locationServiceGosoanSensor = SensorService.getLocationServiceGosoanSensor(context)
     }
 
     @SuppressLint("MissingPermission")
+    @ExperimentalUnsignedTypes
     fun registerListener(measurementFrequency: Int) {
         if (this::fusedLocationProviderClient.isInitialized) {
             locationRequest = LocationRequest.create().apply {
@@ -89,6 +114,7 @@ class LocationService {
         }
     }
 
+    @ExperimentalUnsignedTypes
     fun unregisterListener() {
         if (this::fusedLocationProviderClient.isInitialized && this::locationRequest.isInitialized) {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
