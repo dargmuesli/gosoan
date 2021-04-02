@@ -1,3 +1,10 @@
+# [0.9.0](https://github.com/dargmuesli/gosoan/compare/0.8.1...0.9.0) (2021-04-02)
+
+
+### Features
+
+* add FlatBuffers and WebSocket ([31e7cb5](https://github.com/dargmuesli/gosoan/commit/31e7cb5c3e9b8835bba5fd4fdb5acac2a0d5ff4a))
+
 ## [0.8.1](https://github.com/dargmuesli/gosoan/compare/0.8.0...0.8.1) (2021-03-31)
 
 
