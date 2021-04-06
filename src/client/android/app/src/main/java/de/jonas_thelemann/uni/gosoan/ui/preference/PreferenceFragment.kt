@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import androidx.preference.*
+import de.jonas_thelemann.uni.gosoan.BuildConfig
 import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getKey
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
@@ -66,7 +67,7 @@ class PreferenceFragment : PreferenceFragmentCompat(),
         serverIpPreference.icon = getResourceDrawable("ic_baseline_cloud_24")
         serverIpPreference.key = getKey(prefix, PREFERENCE_SENSOR_SERVER_IP_ID)
         serverIpPreference.title = getResourceString(PREFERENCE_SENSOR_SERVER_IP_ID)
-        serverIpPreference.setDefaultValue("127.0.0.1")
+        serverIpPreference.setDefaultValue(BuildConfig.SERVER_IP)
         serverIpPreference.summaryProvider = EditTextPreference.SimpleSummaryProvider.getInstance()
         category.addPreference(serverIpPreference)
 

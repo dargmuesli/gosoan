@@ -20,10 +20,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "int", "MIN_SDK_VERSION", "$minSdkVersion.apiLevel"
-        buildConfigField "String", "SERVER_IP", "\"10.0.2.2\""
+        buildConfigField "String", "SERVER_IP", '"127.0.0.1"'
         buildConfigField "int", "SERVER_PORT_WEBSOCKET", "8783"
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "SERVER_IP", '"10.0.2.2"'
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
