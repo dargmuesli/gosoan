@@ -16,6 +16,13 @@
     </fragment>
 
     <fragment
+        android:id="@+id/navigation_network_interface"
+        android:name="de.jonas_thelemann.uni.gosoan.ui.network_interface.NetworkInterfaceFragment"
+        android:label="@string/network_interfaces"
+        tools:layout="@layout/fragment_network_interface" >
+    </fragment>
+
+    <fragment
         android:id="@+id/navigation_preference"
         android:name="de.jonas_thelemann.uni.gosoan.ui.preference.PreferenceWrapperFragment"
         android:label="@string/preferences">

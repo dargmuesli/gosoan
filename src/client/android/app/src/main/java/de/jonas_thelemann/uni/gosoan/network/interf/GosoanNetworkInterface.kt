@@ -9,6 +9,7 @@ interface GosoanNetworkInterface {
     val queue: ConcurrentLinkedQueue<ByteArray>
     val serverUri: URI
 
+    var dataSent: Int
     var exception: Exception?
 
     fun start()
@@ -26,9 +27,13 @@ interface GosoanNetworkInterface {
             dequeue()
         }.start()
     }
+
     fun dequeue() {
         if (isGosoanOpen) {
-            queue.forEach { sendBytes(it.plus(0x0A)) }
+            queue.forEach {
+                sendBytes(it.plus(0x0A))
+                dataSent++
+            }
         }
     }
 

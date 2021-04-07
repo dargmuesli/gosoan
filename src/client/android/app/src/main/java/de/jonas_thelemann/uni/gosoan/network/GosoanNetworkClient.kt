@@ -4,10 +4,14 @@ import com.google.flatbuffers.FlatBufferBuilder
 import com.google.gson.Gson
 import de.jonas_thelemann.uni.gosoan.BuildConfig
 import de.jonas_thelemann.uni.gosoan.generated.GosoanSensorEventFB
-import de.jonas_thelemann.uni.gosoan.model.*
+import de.jonas_thelemann.uni.gosoan.model.GosoanDataFormat
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
+import de.jonas_thelemann.uni.gosoan.model.GosoanTransmissionMethod
 import de.jonas_thelemann.uni.gosoan.network.interf.GosoanNetworkInterface
 import de.jonas_thelemann.uni.gosoan.network.interf.GosoanNetworkTcpClient
 import de.jonas_thelemann.uni.gosoan.network.interf.GosoanNetworkWebSocketClient
+import de.jonas_thelemann.uni.gosoan.repository.NetworkInterfaceRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,18 +20,16 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GosoanNetworkClient @Inject constructor() {
-    private val networkInterfaces = mutableListOf<GosoanNetworkInterface>()
-    private val sensorIdTransmissionConfigurationMap =
-        mutableMapOf<String, GosoanTransmissionConfiguration>()
-
+class GosoanNetworkClient @Inject constructor(private val networkInterfaceRepository: NetworkInterfaceRepository) {
 
     @ExperimentalUnsignedTypes
     fun send(gosoanSensorEvent: GosoanSensorEvent) {
-        val transmissionConfiguration = sensorIdTransmissionConfigurationMap[GosoanSensor.getId(
-            gosoanSensorEvent.sensorName,
-            gosoanSensorEvent.sensorType
-        )]
+        val transmissionConfiguration = networkInterfaceRepository.getTransmissionConfiguration(
+            GosoanSensor.getId(
+                gosoanSensorEvent.sensorName,
+                gosoanSensorEvent.sensorType
+            )
+        )
             ?: return
         val byteArray = when (transmissionConfiguration.dataFormat) {
             GosoanDataFormat.FlatBuffers -> getGosoanSensorEventAsFlatBuffersByteArray(
@@ -58,37 +60,27 @@ class GosoanNetworkClient @Inject constructor() {
                 }
         }
 
-        var networkInterfaceUsed: GosoanNetworkInterface? = null
+        val gosoanNetworkInterface: GosoanNetworkInterface =
+            networkInterfaceRepository.getGosoanNetworkInterface(serverIp, port)
+                ?: when (transmissionMethod) {
+                    GosoanTransmissionMethod.TCP -> GosoanNetworkTcpClient(URI("tcp://$serverIp:$port"))
+                    GosoanTransmissionMethod.WebSocket -> GosoanNetworkWebSocketClient(URI("http://$serverIp:$port"))
+                }
 
-        for (networkInterface in networkInterfaces) {
-            if (networkInterface.serverUri.host == serverIp && networkInterface.serverUri.port == port) {
-                networkInterfaceUsed = networkInterface
-                break
-            }
-        }
+        networkInterfaceRepository.addNetworkInterface(gosoanNetworkInterface)
+        networkInterfaceRepository.addSensorIdTransmissionConfigurationMapping(
+            gosoanSensor.getId(),
+            dataFormat,
+            gosoanNetworkInterface
+        )
 
-        if (networkInterfaceUsed == null) {
-            networkInterfaceUsed = when (transmissionMethod) {
-                GosoanTransmissionMethod.TCP -> GosoanNetworkTcpClient(URI("tcp://$serverIp:$port"))
-                GosoanTransmissionMethod.WebSocket -> GosoanNetworkWebSocketClient(URI("http://$serverIp:$port"))
-            }
-        }
-
-        networkInterfaces.add(networkInterfaceUsed)
-        sensorIdTransmissionConfigurationMap[gosoanSensor.getId()] =
-            GosoanTransmissionConfiguration(dataFormat, networkInterfaceUsed)
         CoroutineScope(Dispatchers.IO).launch {
-            networkInterfaceUsed.start()
+            gosoanNetworkInterface.start()
         }
     }
 
     fun teardownNetworkClients() {
-        for (networkInterface in networkInterfaces) {
-            networkInterface.stop()
-        }
-
-        networkInterfaces.clear()
-        sensorIdTransmissionConfigurationMap.clear()
+        networkInterfaceRepository.clear()
     }
 }
 

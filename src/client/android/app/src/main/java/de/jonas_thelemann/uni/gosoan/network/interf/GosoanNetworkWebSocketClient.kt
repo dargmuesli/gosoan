@@ -12,6 +12,7 @@ class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
     override val isGosoanOpen: Boolean get() = isOpen
     override val queue: ConcurrentLinkedQueue<ByteArray> = ConcurrentLinkedQueue()
 
+    override var dataSent: Int = 0
     override var exception: Exception? = null
 
     override fun onOpen(handshakedata: ServerHandshake?) {

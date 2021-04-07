@@ -9,6 +9,7 @@ import androidx.preference.*
 import de.jonas_thelemann.uni.gosoan.BuildConfig
 import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getKey
+import de.jonas_thelemann.uni.gosoan.R
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.service.LocationService
 import de.jonas_thelemann.uni.gosoan.service.SensorService
@@ -134,11 +135,10 @@ class PreferenceFragment : PreferenceFragmentCompat(),
             Preference.SummaryProvider<EditTextPreference> { preference ->
                 val text = preference.text
 
-                // TODO: Remove hardcoded string.
                 if (TextUtils.isEmpty(text)) {
-                    "Not set"
+                    resources.getString(R.string.not_set)
                 } else {
-                    "$text µs (guide value)"
+                    String.format(resources.getString(R.string.microseconds), text)
                 }
             }
     }

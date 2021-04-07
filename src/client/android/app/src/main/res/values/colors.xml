@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="card_enabled">#4000FF00</color>
     <color name="card_disabled">#40FF0000</color>
+    <color name="error">#A40000</color>
 </resources>

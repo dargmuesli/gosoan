@@ -10,6 +10,8 @@ class GosoanNetworkTcpClient(override val serverUri: URI) : GosoanNetworkInterfa
     override val isGosoanOpen
         get() = if (::clientSocket.isInitialized) clientSocket.isConnected else false
     override val queue: ConcurrentLinkedQueue<ByteArray> = ConcurrentLinkedQueue()
+
+    override var dataSent: Int = 0
     override var exception: Exception? = null
 
     private lateinit var clientSocket: Socket

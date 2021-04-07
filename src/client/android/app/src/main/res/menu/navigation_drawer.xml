@@ -5,6 +5,10 @@
             android:id="@+id/navigation_sensor"
             android:icon="@drawable/ic_baseline_smartphone_24"
             android:title="@string/sensors" />
+        <item
+            android:id="@+id/navigation_network_interface"
+            android:icon="@drawable/ic_baseline_cloud_24"
+            android:title="@string/network_interfaces" />
     </group>
     <group android:id="@+id/group_preferences">
         <item

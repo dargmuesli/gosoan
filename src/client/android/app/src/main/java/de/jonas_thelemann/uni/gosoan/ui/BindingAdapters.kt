@@ -5,6 +5,8 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
+import de.jonas_thelemann.uni.gosoan.network.interf.GosoanNetworkInterface
+import de.jonas_thelemann.uni.gosoan.ui.network_interface.NetworkInterfaceListAdapter
 import de.jonas_thelemann.uni.gosoan.ui.sensor.SensorListAdapter
 
 @BindingAdapter("visible")
@@ -17,6 +19,12 @@ fun SwipeRefreshLayout.bindRefreshListener(listener: Runnable) {
     setOnRefreshListener {
         listener.run()
     }
+}
+
+@BindingAdapter("gosoanNetworkInterfaces")
+fun RecyclerView.bindNetworkInterfaces(gosoanNetworkInterface: List<GosoanNetworkInterface>?) {
+    val adapter = adapter as NetworkInterfaceListAdapter
+    adapter.submitList(gosoanNetworkInterface)
 }
 
 @BindingAdapter("gosoanSensors")
