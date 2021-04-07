@@ -18,8 +18,11 @@ import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import de.jonas_thelemann.uni.gosoan.*
+import de.jonas_thelemann.uni.gosoan.model.GosoanDataFormat
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
-import de.jonas_thelemann.uni.gosoan.networking.WebSocketClient
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
+import de.jonas_thelemann.uni.gosoan.model.GosoanTransmissionMethod
+import de.jonas_thelemann.uni.gosoan.network.GosoanNetworkClient
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -134,7 +137,7 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
     }
 
     @Inject
-    lateinit var webSocketClient: WebSocketClient
+    lateinit var gosoanNetworkClient: GosoanNetworkClient
 
     @Inject
     lateinit var locationService: LocationService
@@ -191,7 +194,8 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
                 GosoanSensor(sensorMapEntry.value.name, sensorMapEntry.value.type)
             ) {
                 sensorManager.registerListener(
-                    this, sensorMapEntry.value,
+                    this,
+                    sensorMapEntry.value,
                     it
                 )
             }
@@ -216,6 +220,20 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
                     sharedPreferences,
                     gosoanSensor.getId()
                 )
+            val serverIp =
+                PreferenceUtil.getPreferenceServerIp(sharedPreferences, gosoanSensor.getId())
+            val dataFormat =
+                PreferenceUtil.getPreferenceDataFormat(sharedPreferences, gosoanSensor.getId())
+            val transmissionMethod = PreferenceUtil.getPreferenceTransmissionMethod(
+                sharedPreferences,
+                gosoanSensor.getId()
+            )
+            gosoanNetworkClient.setupNetworkClient(
+                gosoanSensor,
+                serverIp,
+                GosoanDataFormat.valueOf(dataFormat),
+                GosoanTransmissionMethod.valueOf(transmissionMethod)
+            )
 
             Timber.i(
                 "Registering listener for sensor %s with delay %s.",
@@ -237,6 +255,7 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
         Timber.i("Unregistering listeners.")
         (getSystemService(SENSOR_SERVICE) as SensorManager).unregisterListener(this)
         locationService.unregisterListener()
+        gosoanNetworkClient.teardownNetworkClients()
         Timber.i("Service Stopped.")
     }
 
@@ -244,8 +263,8 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
 
-        webSocketClient.send(
-            getGosoanSensorEventAsByteArray(
+        gosoanNetworkClient.send(
+            GosoanSensorEvent(
                 event.sensor.type,
                 event.sensor.name,
                 event.values,

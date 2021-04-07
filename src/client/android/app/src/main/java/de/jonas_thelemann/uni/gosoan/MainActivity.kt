@@ -17,7 +17,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import de.jonas_thelemann.uni.gosoan.navigation.GosoanNavigation
-import de.jonas_thelemann.uni.gosoan.networking.WebSocketClient
 import de.jonas_thelemann.uni.gosoan.repository.SensorRepository
 import de.jonas_thelemann.uni.gosoan.service.REQUEST_PERMISSIONS_REQUEST_CODE
 import de.jonas_thelemann.uni.gosoan.service.SensorService
@@ -28,9 +27,6 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var sensorRepository: SensorRepository
-
-    @Inject
-    lateinit var webSocketClient: WebSocketClient
 
     val gosoanNavigation: GosoanNavigation = GosoanNavigation(this)
 
@@ -62,8 +58,6 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesListener)
-
-        webSocketClient.connect()
 
         SensorService.start(this)
     }

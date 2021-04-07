@@ -12,9 +12,9 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import de.jonas_thelemann.uni.gosoan.R
-import de.jonas_thelemann.uni.gosoan.getGosoanSensorEventAsByteArray
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
-import de.jonas_thelemann.uni.gosoan.networking.WebSocketClient
+import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
+import de.jonas_thelemann.uni.gosoan.network.GosoanNetworkClient
 import de.jonas_thelemann.uni.gosoan.showSnackbar
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -62,7 +62,7 @@ class LocationService @Inject constructor() {
     }
 
     @Inject
-    lateinit var webSocketClient: WebSocketClient
+    lateinit var gosoanGosoanNetworkClient: GosoanNetworkClient
 
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationServiceGosoanSensor: GosoanSensor
@@ -73,8 +73,8 @@ class LocationService @Inject constructor() {
         override fun onLocationResult(locationResult: LocationResult) {
             super.onLocationResult(locationResult)
 
-            webSocketClient.send(
-                getGosoanSensorEventAsByteArray(
+            gosoanGosoanNetworkClient.send(
+                GosoanSensorEvent(
                     locationServiceGosoanSensor.type,
                     locationServiceGosoanSensor.name,
                     floatArrayOf(

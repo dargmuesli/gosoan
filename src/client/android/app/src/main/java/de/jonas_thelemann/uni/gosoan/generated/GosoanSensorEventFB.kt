@@ -8,12 +8,12 @@ import com.google.flatbuffers.*
 
 @Suppress("unused")
 @ExperimentalUnsignedTypes
-class GosoanSensorEvent : Table() {
+class GosoanSensorEventFB : Table() {
 
     fun __init(_i: Int, _bb: ByteBuffer)  {
         __reset(_i, _bb)
     }
-    fun __assign(_i: Int, _bb: ByteBuffer) : GosoanSensorEvent {
+    fun __assign(_i: Int, _bb: ByteBuffer) : GosoanSensorEventFB {
         __init(_i, _bb)
         return this
     }
@@ -55,21 +55,21 @@ class GosoanSensorEvent : Table() {
         }
     companion object {
         fun validateVersion() = Constants.FLATBUFFERS_1_12_0()
-        fun getRootAsGosoanSensorEvent(_bb: ByteBuffer): GosoanSensorEvent = getRootAsGosoanSensorEvent(_bb, GosoanSensorEvent())
-        fun getRootAsGosoanSensorEvent(_bb: ByteBuffer, obj: GosoanSensorEvent): GosoanSensorEvent {
+        fun getRootAsGosoanSensorEventFB(_bb: ByteBuffer): GosoanSensorEventFB = getRootAsGosoanSensorEventFB(_bb, GosoanSensorEventFB())
+        fun getRootAsGosoanSensorEventFB(_bb: ByteBuffer, obj: GosoanSensorEventFB): GosoanSensorEventFB {
             _bb.order(ByteOrder.LITTLE_ENDIAN)
             return (obj.__assign(_bb.getInt(_bb.position()) + _bb.position(), _bb))
         }
-        fun createGosoanSensorEvent(builder: FlatBufferBuilder, sensorType: Int, sensorNameOffset: Int, valuesOffset: Int, accuracy: Int, timestamp: Long) : Int {
+        fun createGosoanSensorEventFB(builder: FlatBufferBuilder, sensorType: Int, sensorNameOffset: Int, valuesOffset: Int, accuracy: Int, timestamp: Long) : Int {
             builder.startTable(5)
             addTimestamp(builder, timestamp)
             addAccuracy(builder, accuracy)
             addValues(builder, valuesOffset)
             addSensorName(builder, sensorNameOffset)
             addSensorType(builder, sensorType)
-            return endGosoanSensorEvent(builder)
+            return endGosoanSensorEventFB(builder)
         }
-        fun startGosoanSensorEvent(builder: FlatBufferBuilder) = builder.startTable(5)
+        fun startGosoanSensorEventFB(builder: FlatBufferBuilder) = builder.startTable(5)
         fun addSensorType(builder: FlatBufferBuilder, sensorType: Int) = builder.addInt(0, sensorType, 0)
         fun addSensorName(builder: FlatBufferBuilder, sensorName: Int) = builder.addOffset(1, sensorName, 0)
         fun addValues(builder: FlatBufferBuilder, values: Int) = builder.addOffset(2, values, 0)
@@ -83,11 +83,11 @@ class GosoanSensorEvent : Table() {
         fun startValuesVector(builder: FlatBufferBuilder, numElems: Int) = builder.startVector(4, numElems, 4)
         fun addAccuracy(builder: FlatBufferBuilder, accuracy: Int) = builder.addInt(3, accuracy, 0)
         fun addTimestamp(builder: FlatBufferBuilder, timestamp: Long) = builder.addLong(4, timestamp, 0L)
-        fun endGosoanSensorEvent(builder: FlatBufferBuilder) : Int {
+        fun endGosoanSensorEventFB(builder: FlatBufferBuilder) : Int {
             val o = builder.endTable()
             return o
         }
-        fun finishGosoanSensorEventBuffer(builder: FlatBufferBuilder, offset: Int) = builder.finish(offset)
-        fun finishSizePrefixedGosoanSensorEventBuffer(builder: FlatBufferBuilder, offset: Int) = builder.finishSizePrefixed(offset)
+        fun finishGosoanSensorEventFBBuffer(builder: FlatBufferBuilder, offset: Int) = builder.finish(offset)
+        fun finishSizePrefixedGosoanSensorEventFBBuffer(builder: FlatBufferBuilder, offset: Int) = builder.finishSizePrefixed(offset)
     }
 }

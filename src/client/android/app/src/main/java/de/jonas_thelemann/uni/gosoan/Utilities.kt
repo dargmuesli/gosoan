@@ -14,9 +14,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.google.android.material.snackbar.Snackbar
-import com.google.flatbuffers.FlatBufferBuilder
-import de.jonas_thelemann.uni.gosoan.generated.GosoanSensorEvent
+import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_DATA_FORMAT_ID
 import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID
+import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_SERVER_IP_ID
+import de.jonas_thelemann.uni.gosoan.ui.preference.PREFERENCE_SENSOR_TRANSMISSION_METHOD_ID
 
 
 fun <T> sourcedLiveData(vararg sources: LiveData<*>, block: () -> T?): LiveData<T> =
@@ -44,6 +45,36 @@ class PreferenceUtil {
                 getKey(namespace, PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID),
                 SensorManager.SENSOR_DELAY_NORMAL.toString()
             )?.toInt() ?: SensorManager.SENSOR_DELAY_NORMAL
+        }
+
+        fun getPreferenceServerIp(
+            sharedPreferences: SharedPreferences,
+            namespace: String
+        ): String {
+            return sharedPreferences.getString(
+                getKey(namespace, PREFERENCE_SENSOR_SERVER_IP_ID),
+                BuildConfig.DEFAULT_SERVER_IP
+            ) ?: BuildConfig.DEFAULT_SERVER_IP
+        }
+
+        fun getPreferenceDataFormat(
+            sharedPreferences: SharedPreferences,
+            namespace: String
+        ): String {
+            return sharedPreferences.getString(
+                getKey(namespace, PREFERENCE_SENSOR_DATA_FORMAT_ID),
+                BuildConfig.DEFAULT_DATA_FORMAT
+            ) ?: BuildConfig.DEFAULT_DATA_FORMAT
+        }
+
+        fun getPreferenceTransmissionMethod(
+            sharedPreferences: SharedPreferences,
+            namespace: String
+        ): String {
+            return sharedPreferences.getString(
+                getKey(namespace, PREFERENCE_SENSOR_TRANSMISSION_METHOD_ID),
+                BuildConfig.DEFAULT_TRANSMISSION_METHOD
+            ) ?: BuildConfig.DEFAULT_TRANSMISSION_METHOD
         }
     }
 }
@@ -76,27 +107,4 @@ fun showSnackbar(
         snackbar.setAction(context.getString(actionStrId), listener)
     }
     snackbar.show()
-}
-
-@ExperimentalUnsignedTypes
-fun getGosoanSensorEventAsByteArray(
-    sensorType: Int,
-    sensorName: String,
-    values: FloatArray,
-    accuracy: Int,
-    timestamp: Long
-): ByteArray {
-    val fb = FlatBufferBuilder(128)
-    val sensorNameOffset = fb.createString(sensorName)
-    val valuesOffset = GosoanSensorEvent.createValuesVector(fb, values)
-    val gosoanSensorEventOffset = GosoanSensorEvent.createGosoanSensorEvent(
-        fb,
-        sensorType,
-        sensorNameOffset,
-        valuesOffset,
-        accuracy,
-        timestamp
-    )
-    fb.finish(gosoanSensorEventOffset)
-    return fb.sizedByteArray()
 }

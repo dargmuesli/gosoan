@@ -1,21 +1,25 @@
-package de.jonas_thelemann.uni.gosoan.networking
+package de.jonas_thelemann.uni.gosoan.network.interf
 
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import timber.log.Timber
 import java.net.URI
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class WebSocketClient @Inject constructor(serverURI: URI) : WebSocketClient(serverURI) {
+class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
+    WebSocketClient(serverUri), GosoanNetworkInterface {
+
+    override val isGosoanOpen: Boolean get() = isOpen
+
     override fun onOpen(handshakedata: ServerHandshake?) {
         Timber.i("WebSocket connection opened.")
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
         Timber.i(
-            "WebSocket connection closed by %s. Code: %s. Reason: %s.", (if (remote) "remote peer" else "us"), code, reason
+            "WebSocket connection closed by %s. Code: %s. Reason: %s.",
+            (if (remote) "remote peer" else "us"),
+            code,
+            reason
         )
     }
 
@@ -27,5 +31,14 @@ class WebSocketClient @Inject constructor(serverURI: URI) : WebSocketClient(serv
         if (ex != null) {
             throw ex
         }
+    }
+
+    override fun start() {
+        println(serverUri)
+        connect()
+    }
+
+    override fun stop() {
+        close()
     }
 }

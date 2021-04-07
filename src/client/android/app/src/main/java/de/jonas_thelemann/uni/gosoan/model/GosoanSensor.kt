@@ -13,8 +13,14 @@ data class GosoanSensor constructor(
     val name: String,
     val type: Int
 ) : Serializable {
+    companion object {
+        fun getId(name: String, type: Int): String {
+            return type.toString() + "|" + name.replace("""\s""".toRegex(), "_")
+        }
+    }
+
     fun getId(): String {
-        return type.toString() + "|" + name.replace("""\s""".toRegex(), "_")
+        return getId(name, type)
     }
 
     fun isActive(context: Context): Boolean {
@@ -33,5 +39,23 @@ data class GosoanSensor constructor(
         ) sharedPreferences.getBoolean(
             getKey(getId(), PREFERENCE_SENSOR_TOGGLE_ID), false
         ) else preferenceGlobalToggle
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GosoanSensor
+
+        if (name != other.name) return false
+        if (type != other.type) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + type
+        return result
     }
 }

@@ -63,14 +63,6 @@ class PreferenceFragment : PreferenceFragmentCompat(),
         togglePreference.setDefaultValue(gosoanSensor == null)
         category.addPreference(togglePreference)
 
-        val serverIpPreference = EditTextPreference(context)
-        serverIpPreference.icon = getResourceDrawable("ic_baseline_cloud_24")
-        serverIpPreference.key = getKey(prefix, PREFERENCE_SENSOR_SERVER_IP_ID)
-        serverIpPreference.title = getResourceString(PREFERENCE_SENSOR_SERVER_IP_ID)
-        serverIpPreference.setDefaultValue(BuildConfig.SERVER_IP)
-        serverIpPreference.summaryProvider = EditTextPreference.SimpleSummaryProvider.getInstance()
-        category.addPreference(serverIpPreference)
-
         val measurementFrequencyPreference = EditTextPreference(context)
         measurementFrequencyPreference.icon = getResourceDrawable("ic_baseline_timer_24")
         measurementFrequencyPreference.key =
@@ -79,7 +71,14 @@ class PreferenceFragment : PreferenceFragmentCompat(),
             getResourceString(PREFERENCE_SENSOR_MEASUREMENT_FREQUENCY_ID)
         measurementFrequencyPreference.summaryProvider =
             EditTextPreference.SimpleSummaryProvider.getInstance()
-        measurementFrequencyPreference.setDefaultValue("200000")
+        measurementFrequencyPreference.setDefaultValue(BuildConfig.DEFAULT_MEASUREMENT_FREQUENCY.toString())
+
+        val serverIpPreference = EditTextPreference(context)
+        serverIpPreference.icon = getResourceDrawable("ic_baseline_cloud_24")
+        serverIpPreference.key = getKey(prefix, PREFERENCE_SENSOR_SERVER_IP_ID)
+        serverIpPreference.title = getResourceString(PREFERENCE_SENSOR_SERVER_IP_ID)
+        serverIpPreference.setDefaultValue(BuildConfig.DEFAULT_SERVER_IP)
+        serverIpPreference.summaryProvider = EditTextPreference.SimpleSummaryProvider.getInstance()
 
         val dataFormatPreference = ListPreference(context)
         dataFormatPreference.entries =
@@ -90,7 +89,7 @@ class PreferenceFragment : PreferenceFragmentCompat(),
         dataFormatPreference.key = getKey(prefix, PREFERENCE_SENSOR_DATA_FORMAT_ID)
         dataFormatPreference.title = getResourceString(PREFERENCE_SENSOR_DATA_FORMAT_ID)
         dataFormatPreference.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
-        dataFormatPreference.setDefaultValue("flatbuffers")
+        dataFormatPreference.setDefaultValue(BuildConfig.DEFAULT_DATA_FORMAT)
 
         val transmissionMethodPreference = ListPreference(context)
         transmissionMethodPreference.entries =
@@ -103,9 +102,10 @@ class PreferenceFragment : PreferenceFragmentCompat(),
             getResourceString(PREFERENCE_SENSOR_TRANSMISSION_METHOD_ID)
         transmissionMethodPreference.summaryProvider =
             ListPreference.SimpleSummaryProvider.getInstance()
-        transmissionMethodPreference.setDefaultValue("websocket")
+        transmissionMethodPreference.setDefaultValue(BuildConfig.DEFAULT_TRANSMISSION_METHOD)
 
         category.addPreference(measurementFrequencyPreference)
+        category.addPreference(serverIpPreference)
         category.addPreference(dataFormatPreference)
         category.addPreference(transmissionMethodPreference)
 
@@ -115,15 +115,15 @@ class PreferenceFragment : PreferenceFragmentCompat(),
             val overrideGlobalPreferenceKey = getKey(prefix, PREFERENCE_SENSOR_OVERRIDE_ID)
 
             togglePreference.dependency = overrideGlobalPreferenceKey
-            serverIpPreference.dependency = overrideGlobalPreferenceKey
             measurementFrequencyPreference.dependency = overrideGlobalPreferenceKey
+            serverIpPreference.dependency = overrideGlobalPreferenceKey
             dataFormatPreference.dependency = overrideGlobalPreferenceKey
             transmissionMethodPreference.dependency = overrideGlobalPreferenceKey
         }
 
         val toggleMeasurementsKey = getKey(prefix, PREFERENCE_SENSOR_TOGGLE_ID)
-        serverIpPreference.dependency = toggleMeasurementsKey
         measurementFrequencyPreference.dependency = toggleMeasurementsKey
+        serverIpPreference.dependency = toggleMeasurementsKey
         dataFormatPreference.dependency = toggleMeasurementsKey
         transmissionMethodPreference.dependency = toggleMeasurementsKey
 
@@ -133,10 +133,12 @@ class PreferenceFragment : PreferenceFragmentCompat(),
         countingPreference?.summaryProvider =
             Preference.SummaryProvider<EditTextPreference> { preference ->
                 val text = preference.text
+
+                // TODO: Remove hardcoded string.
                 if (TextUtils.isEmpty(text)) {
                     "Not set"
                 } else {
-                    "$text µs"
+                    "$text µs (guide value)"
                 }
             }
     }

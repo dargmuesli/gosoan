@@ -6,34 +6,34 @@ import (
 	flatbuffers "github.com/google/flatbuffers/go"
 )
 
-type GosoanSensorEvent struct {
+type GosoanSensorEventFB struct {
 	_tab flatbuffers.Table
 }
 
-func GetRootAsGosoanSensorEvent(buf []byte, offset flatbuffers.UOffsetT) *GosoanSensorEvent {
+func GetRootAsGosoanSensorEventFB(buf []byte, offset flatbuffers.UOffsetT) *GosoanSensorEventFB {
 	n := flatbuffers.GetUOffsetT(buf[offset:])
-	x := &GosoanSensorEvent{}
+	x := &GosoanSensorEventFB{}
 	x.Init(buf, n+offset)
 	return x
 }
 
-func GetSizePrefixedRootAsGosoanSensorEvent(buf []byte, offset flatbuffers.UOffsetT) *GosoanSensorEvent {
+func GetSizePrefixedRootAsGosoanSensorEventFB(buf []byte, offset flatbuffers.UOffsetT) *GosoanSensorEventFB {
 	n := flatbuffers.GetUOffsetT(buf[offset+flatbuffers.SizeUint32:])
-	x := &GosoanSensorEvent{}
+	x := &GosoanSensorEventFB{}
 	x.Init(buf, n+offset+flatbuffers.SizeUint32)
 	return x
 }
 
-func (rcv *GosoanSensorEvent) Init(buf []byte, i flatbuffers.UOffsetT) {
+func (rcv *GosoanSensorEventFB) Init(buf []byte, i flatbuffers.UOffsetT) {
 	rcv._tab.Bytes = buf
 	rcv._tab.Pos = i
 }
 
-func (rcv *GosoanSensorEvent) Table() flatbuffers.Table {
+func (rcv *GosoanSensorEventFB) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *GosoanSensorEvent) SensorType() int32 {
+func (rcv *GosoanSensorEventFB) SensorType() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
 		return rcv._tab.GetInt32(o + rcv._tab.Pos)
@@ -41,11 +41,11 @@ func (rcv *GosoanSensorEvent) SensorType() int32 {
 	return 0
 }
 
-func (rcv *GosoanSensorEvent) MutateSensorType(n int32) bool {
+func (rcv *GosoanSensorEventFB) MutateSensorType(n int32) bool {
 	return rcv._tab.MutateInt32Slot(4, n)
 }
 
-func (rcv *GosoanSensorEvent) SensorName() []byte {
+func (rcv *GosoanSensorEventFB) SensorName() []byte {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(6))
 	if o != 0 {
 		return rcv._tab.ByteVector(o + rcv._tab.Pos)
@@ -53,7 +53,7 @@ func (rcv *GosoanSensorEvent) SensorName() []byte {
 	return nil
 }
 
-func (rcv *GosoanSensorEvent) Values(j int) float32 {
+func (rcv *GosoanSensorEventFB) Values(j int) float32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(8))
 	if o != 0 {
 		a := rcv._tab.Vector(o)
@@ -62,7 +62,7 @@ func (rcv *GosoanSensorEvent) Values(j int) float32 {
 	return 0
 }
 
-func (rcv *GosoanSensorEvent) ValuesLength() int {
+func (rcv *GosoanSensorEventFB) ValuesLength() int {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(8))
 	if o != 0 {
 		return rcv._tab.VectorLen(o)
@@ -70,7 +70,7 @@ func (rcv *GosoanSensorEvent) ValuesLength() int {
 	return 0
 }
 
-func (rcv *GosoanSensorEvent) MutateValues(j int, n float32) bool {
+func (rcv *GosoanSensorEventFB) MutateValues(j int, n float32) bool {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(8))
 	if o != 0 {
 		a := rcv._tab.Vector(o)
@@ -79,7 +79,7 @@ func (rcv *GosoanSensorEvent) MutateValues(j int, n float32) bool {
 	return false
 }
 
-func (rcv *GosoanSensorEvent) Accuracy() int32 {
+func (rcv *GosoanSensorEventFB) Accuracy() int32 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(10))
 	if o != 0 {
 		return rcv._tab.GetInt32(o + rcv._tab.Pos)
@@ -87,11 +87,11 @@ func (rcv *GosoanSensorEvent) Accuracy() int32 {
 	return 0
 }
 
-func (rcv *GosoanSensorEvent) MutateAccuracy(n int32) bool {
+func (rcv *GosoanSensorEventFB) MutateAccuracy(n int32) bool {
 	return rcv._tab.MutateInt32Slot(10, n)
 }
 
-func (rcv *GosoanSensorEvent) Timestamp() int64 {
+func (rcv *GosoanSensorEventFB) Timestamp() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(12))
 	if o != 0 {
 		return rcv._tab.GetInt64(o + rcv._tab.Pos)
@@ -99,31 +99,31 @@ func (rcv *GosoanSensorEvent) Timestamp() int64 {
 	return 0
 }
 
-func (rcv *GosoanSensorEvent) MutateTimestamp(n int64) bool {
+func (rcv *GosoanSensorEventFB) MutateTimestamp(n int64) bool {
 	return rcv._tab.MutateInt64Slot(12, n)
 }
 
-func GosoanSensorEventStart(builder *flatbuffers.Builder) {
+func GosoanSensorEventFBStart(builder *flatbuffers.Builder) {
 	builder.StartObject(5)
 }
-func GosoanSensorEventAddSensorType(builder *flatbuffers.Builder, sensorType int32) {
+func GosoanSensorEventFBAddSensorType(builder *flatbuffers.Builder, sensorType int32) {
 	builder.PrependInt32Slot(0, sensorType, 0)
 }
-func GosoanSensorEventAddSensorName(builder *flatbuffers.Builder, sensorName flatbuffers.UOffsetT) {
+func GosoanSensorEventFBAddSensorName(builder *flatbuffers.Builder, sensorName flatbuffers.UOffsetT) {
 	builder.PrependUOffsetTSlot(1, flatbuffers.UOffsetT(sensorName), 0)
 }
-func GosoanSensorEventAddValues(builder *flatbuffers.Builder, values flatbuffers.UOffsetT) {
+func GosoanSensorEventFBAddValues(builder *flatbuffers.Builder, values flatbuffers.UOffsetT) {
 	builder.PrependUOffsetTSlot(2, flatbuffers.UOffsetT(values), 0)
 }
-func GosoanSensorEventStartValuesVector(builder *flatbuffers.Builder, numElems int) flatbuffers.UOffsetT {
+func GosoanSensorEventFBStartValuesVector(builder *flatbuffers.Builder, numElems int) flatbuffers.UOffsetT {
 	return builder.StartVector(4, numElems, 4)
 }
-func GosoanSensorEventAddAccuracy(builder *flatbuffers.Builder, accuracy int32) {
+func GosoanSensorEventFBAddAccuracy(builder *flatbuffers.Builder, accuracy int32) {
 	builder.PrependInt32Slot(3, accuracy, 0)
 }
-func GosoanSensorEventAddTimestamp(builder *flatbuffers.Builder, timestamp int64) {
+func GosoanSensorEventFBAddTimestamp(builder *flatbuffers.Builder, timestamp int64) {
 	builder.PrependInt64Slot(4, timestamp, 0)
 }
-func GosoanSensorEventEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
+func GosoanSensorEventFBEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()
 }

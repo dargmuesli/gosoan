@@ -19,13 +19,21 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        buildConfigField "String", "DEFAULT_DATA_FORMAT", '"FlatBuffers"'
+        buildConfigField "int", "DEFAULT_MEASUREMENT_FREQUENCY", "200000"
+        buildConfigField "String", "DEFAULT_SERVER_IP", '"127.0.0.1"'
+        buildConfigField "String", "DEFAULT_TRANSMISSION_METHOD", '"WebSocket"'
         buildConfigField "int", "MIN_SDK_VERSION", "$minSdkVersion.apiLevel"
-        buildConfigField "String", "SERVER_IP", '"127.0.0.1"'
-        buildConfigField "int", "SERVER_PORT_WEBSOCKET", "8783"
+        buildConfigField "String", "SERVER_PATH_FLATBUFFERS", '"/echo/flatbuffers"'
+        buildConfigField "String", "SERVER_PATH_JSON", '"/echo/json"'
+        buildConfigField "int", "SERVER_PORT_TCP_FLATBUFFERS", "8470"
+        buildConfigField "int", "SERVER_PORT_TCP_JSON", "8474"
+        buildConfigField "int", "SERVER_PORT_WEBSOCKET_FLATBUFFERS", "8770"
+        buildConfigField "int", "SERVER_PORT_WEBSOCKET_JSON", "8774"
     }
     buildTypes {
         debug {
-            buildConfigField "String", "SERVER_IP", '"10.0.2.2"'
+            buildConfigField "String", "DEFAULT_SERVER_IP", '"10.0.2.2"'
         }
         release {
             minifyEnabled false
@@ -55,8 +63,11 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$junit_test_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
 
-    // Flatbuffers
-    implementation 'com.google.flatbuffers:flatbuffers-java:1.12.0'
+    // FlatBuffers
+    implementation "com.google.flatbuffers:flatbuffers-java:$flatbuffers_version"
+
+    // GSON
+    implementation "com.google.code.gson:gson:$gson_version"
 
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"

@@ -4,13 +4,39 @@ import (
 	"log"
 	"net/http"
 
-	Gosoan "github.com/dargmuesli/gosoan/de/jonas_thelemann/uni/gosoan/generated"
 	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{} // use default options
 
-func echo(w http.ResponseWriter, r *http.Request) {
+func WebSocketServer() {
+	addrWebSocketFlatBuffers := "127.0.0.1:8770"
+	addrWebSocketJson := "127.0.0.1:8774"
+
+	log.Println("Listening WebSockets/FlatBuffers on: " + addrWebSocketFlatBuffers)
+	log.Println("Listening WebSockets/Json on: " + addrWebSocketJson)
+
+	serverMuxFlatBuffers := http.NewServeMux()
+	serverMuxFlatBuffers.HandleFunc("/", echoFlatBuffers)
+	serverMuxJson := http.NewServeMux()
+	serverMuxJson.HandleFunc("/", echoJson)
+
+	go func() {
+		log.Fatal(http.ListenAndServe("localhost:8770", serverMuxFlatBuffers))
+	}()
+
+	log.Fatal(http.ListenAndServe("localhost:8774", serverMuxJson))
+}
+
+func echoFlatBuffers(w http.ResponseWriter, r *http.Request) {
+	echo(w, r, byteArrayToFlatBuffers)
+}
+
+func echoJson(w http.ResponseWriter, r *http.Request) {
+	echo(w, r, byteArrayToJson)
+}
+
+func echo(w http.ResponseWriter, r *http.Request, fn byteArrayRead) {
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Print("upgrade:", err)
@@ -18,22 +44,16 @@ func echo(w http.ResponseWriter, r *http.Request) {
 	}
 	defer c.Close()
 	for {
-		mt, message, err := c.ReadMessage()
+		messageType, message, err := c.ReadMessage()
 		if err != nil {
 			log.Println("read:", err)
 			break
 		}
-		gosoanSensorEvent := Gosoan.GetRootAsGosoanSensorEvent(message, 0)
-		log.Printf("recv: %d %s %f %d %d", gosoanSensorEvent.SensorType(), gosoanSensorEvent.SensorName(), gosoanSensorEvent.Values(0), gosoanSensorEvent.Accuracy(), gosoanSensorEvent.Timestamp())
-		err = c.WriteMessage(mt, message)
+		fn(message)
+		err = c.WriteMessage(messageType, message)
 		if err != nil {
 			log.Println("write:", err)
 			break
 		}
 	}
-}
-
-func WebSocketServer() {
-	http.HandleFunc("/echo", echo)
-	log.Fatal(http.ListenAndServe("0.0.0.0:8783", nil))
 }

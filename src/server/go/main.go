@@ -5,5 +5,9 @@ import (
 )
 
 func main() {
-	Gosoan.WebSocketServer()
+	go func() {
+		Gosoan.WebSocketServer()
+	}()
+
+	Gosoan.TCPServer()
 }
