@@ -1,3 +1,12 @@
+# [0.10.0](https://github.com/dargmuesli/gosoan/compare/0.9.0...0.10.0) (2021-04-07)
+
+
+### Features
+
+* add network connectivity ([b144766](https://github.com/dargmuesli/gosoan/commit/b144766ac9333a4f350f9dfe0e3892d60f0b21ad))
+* **android:** use build config as default variable ([54a5c86](https://github.com/dargmuesli/gosoan/commit/54a5c863b2278cc40da6b68864c67f7c5dc3e44d))
+* **idea:** add markdown-navigator xmls ([b7b5092](https://github.com/dargmuesli/gosoan/commit/b7b50929ff80d4b66901d9fa40eefd788ed5cb02))
+
 # [0.9.0](https://github.com/dargmuesli/gosoan/compare/0.8.1...0.9.0) (2021-04-02)
 
 
