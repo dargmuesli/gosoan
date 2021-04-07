@@ -36,9 +36,7 @@ class GosoanNetworkClient @Inject constructor() {
             GosoanDataFormat.JSON -> Gson().toJson(gosoanSensorEvent).toByteArray()
         }
 
-        if (transmissionConfiguration.networkInterface.isGosoanOpen) {
-            transmissionConfiguration.networkInterface.send(byteArray)
-        }
+        transmissionConfiguration.networkInterface.enqueue(byteArray)
     }
 
     fun setupNetworkClient(

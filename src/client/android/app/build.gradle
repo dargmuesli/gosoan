@@ -13,6 +13,7 @@ android {
     defaultConfig {
         applicationId "de.jonas_thelemann.uni.gosoan"
         minSdkVersion 16
+        multiDexEnabled true
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -24,6 +25,7 @@ android {
         buildConfigField "String", "DEFAULT_SERVER_IP", '"127.0.0.1"'
         buildConfigField "String", "DEFAULT_TRANSMISSION_METHOD", '"WebSocket"'
         buildConfigField "int", "MIN_SDK_VERSION", "$minSdkVersion.apiLevel"
+        buildConfigField "int", "QUEUE_SIZE_MAX", "65536"
         buildConfigField "String", "SERVER_PATH_FLATBUFFERS", '"/echo/flatbuffers"'
         buildConfigField "String", "SERVER_PATH_JSON", '"/echo/json"'
         buildConfigField "int", "SERVER_PORT_TCP_FLATBUFFERS", "8470"
@@ -54,11 +56,13 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "androidx.core:core-ktx:$corektx_version"
-    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.multidex:multidex:$multidex_version"
     implementation "com.google.android.gms:play-services-location:$location_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$junit_test_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
