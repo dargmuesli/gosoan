@@ -1,3 +1,16 @@
+# [0.11.0](https://github.com/dargmuesli/gosoan/compare/0.10.0...0.11.0) (2021-04-08)
+
+
+### Bug Fixes
+
+* improve transmission ([6acb915](https://github.com/dargmuesli/gosoan/commit/6acb9150f4bf247ce6de26e703bfe6c23442baf6))
+
+
+### Features
+
+* add network interface fragment ([7354e2f](https://github.com/dargmuesli/gosoan/commit/7354e2f9ba5c9aec16ca47a9efd81b61963dbc91))
+* **android:** add queues ([d5d6ff7](https://github.com/dargmuesli/gosoan/commit/d5d6ff7ab6f89b8a2f292e74c8a25a49d5b50466))
+
 # [0.10.0](https://github.com/dargmuesli/gosoan/compare/0.9.0...0.10.0) (2021-04-07)
 
 
