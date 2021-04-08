@@ -14,6 +14,12 @@ class NetworkInterfaceRepository @Inject constructor() {
         mutableMapOf<String, GosoanTransmissionConfiguration>()
 
     fun addNetworkInterface(gosoanNetworkInterface: GosoanNetworkInterface) {
+        for (gosoanNetworkInterfaceExisting in gosoanNetworkInterfaces) {
+            if (gosoanNetworkInterface == gosoanNetworkInterfaceExisting) {
+                return
+            }
+        }
+
         gosoanNetworkInterfaces.add(gosoanNetworkInterface)
     }
 

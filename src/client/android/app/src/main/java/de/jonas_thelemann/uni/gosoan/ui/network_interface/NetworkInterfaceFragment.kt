@@ -13,7 +13,7 @@ import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.R
 import de.jonas_thelemann.uni.gosoan.databinding.FragmentNetworkInterfaceBinding
 
-const val REFRESH_DELAY = 1000L
+private const val REFRESH_DELAY = 1000L
 
 @AndroidEntryPoint
 class NetworkInterfaceFragment : Fragment(R.layout.fragment_network_interface) {
@@ -27,12 +27,7 @@ class NetworkInterfaceFragment : Fragment(R.layout.fragment_network_interface) {
 
     lateinit var binding: FragmentNetworkInterfaceBinding
 
-    private lateinit var handler: Handler
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        handler = Handler(Looper.getMainLooper())
-    }
+    private val handler: Handler = Handler(Looper.getMainLooper())
 
     override fun onStart() {
         super.onStart()

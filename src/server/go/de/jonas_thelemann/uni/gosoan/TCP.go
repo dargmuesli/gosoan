@@ -2,7 +2,9 @@ package gosoan
 
 import (
 	"bufio"
+	"encoding/binary"
 	"fmt"
+	"io"
 	"log"
 	"net"
 )
@@ -47,22 +49,24 @@ func acceptLoop(l net.Listener, fn byteArrayRead) {
 func handleConnection(c net.Conn, fn byteArrayRead) {
 	fmt.Printf("Serving %s\n", c.RemoteAddr().String())
 
+	reader := bufio.NewReader(c)
+	bufLength := make([]byte, 4)
+
 	for {
-		netData, err := bufio.NewReader(c).ReadBytes(0x0A)
+		_, err := io.ReadFull(reader, bufLength)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		netData = netData[:len(netData)-1]
-		temp := fn(netData)
-
-		if temp == "STOP" {
-			break
+		bufContent := make([]byte, binary.BigEndian.Uint32(bufLength))
+		_, err = io.ReadFull(reader, bufContent)
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
 
-		result := temp + "\n"
-		c.Write([]byte(result))
+		fn(bufContent)
 	}
 
 	c.Close()

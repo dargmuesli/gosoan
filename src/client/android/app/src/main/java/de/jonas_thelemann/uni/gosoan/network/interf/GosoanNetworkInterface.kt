@@ -29,13 +29,14 @@ interface GosoanNetworkInterface {
     }
 
     fun dequeue() {
-        if (isGosoanOpen) {
-            queue.forEach {
-                sendBytes(it.plus(0x0A))
+        queue.forEach {
+            if (!isGosoanOpen) return
+            if (sendBytes(it)) {
+                queue.remove(it)
                 dataSent++
             }
         }
     }
 
-    fun sendBytes(byteArray: ByteArray)
+    fun sendBytes(byteArray: ByteArray): Boolean
 }

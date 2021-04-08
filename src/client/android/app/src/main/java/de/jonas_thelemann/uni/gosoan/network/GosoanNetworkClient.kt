@@ -8,7 +8,6 @@ import de.jonas_thelemann.uni.gosoan.model.GosoanDataFormat
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensorEvent
 import de.jonas_thelemann.uni.gosoan.model.GosoanTransmissionMethod
-import de.jonas_thelemann.uni.gosoan.network.interf.GosoanNetworkInterface
 import de.jonas_thelemann.uni.gosoan.network.interf.GosoanNetworkTcpClient
 import de.jonas_thelemann.uni.gosoan.network.interf.GosoanNetworkWebSocketClient
 import de.jonas_thelemann.uni.gosoan.repository.NetworkInterfaceRepository
@@ -60,23 +59,27 @@ class GosoanNetworkClient @Inject constructor(private val networkInterfaceReposi
                 }
         }
 
-        val gosoanNetworkInterface: GosoanNetworkInterface =
+        var gosoanNetworkInterface =
             networkInterfaceRepository.getGosoanNetworkInterface(serverIp, port)
-                ?: when (transmissionMethod) {
-                    GosoanTransmissionMethod.TCP -> GosoanNetworkTcpClient(URI("tcp://$serverIp:$port"))
-                    GosoanTransmissionMethod.WebSocket -> GosoanNetworkWebSocketClient(URI("http://$serverIp:$port"))
-                }
 
-        networkInterfaceRepository.addNetworkInterface(gosoanNetworkInterface)
+        if (gosoanNetworkInterface == null) {
+            gosoanNetworkInterface = when (transmissionMethod) {
+                GosoanTransmissionMethod.TCP -> GosoanNetworkTcpClient(URI("tcp://$serverIp:$port"))
+                GosoanTransmissionMethod.WebSocket -> GosoanNetworkWebSocketClient(URI("http://$serverIp:$port"))
+            }
+
+            networkInterfaceRepository.addNetworkInterface(gosoanNetworkInterface)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                gosoanNetworkInterface.start()
+            }
+        }
+
         networkInterfaceRepository.addSensorIdTransmissionConfigurationMapping(
             gosoanSensor.getId(),
             dataFormat,
             gosoanNetworkInterface
         )
-
-        CoroutineScope(Dispatchers.IO).launch {
-            gosoanNetworkInterface.start()
-        }
     }
 
     fun teardownNetworkClients() {

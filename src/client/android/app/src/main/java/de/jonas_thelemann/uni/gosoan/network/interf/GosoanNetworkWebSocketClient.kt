@@ -1,5 +1,7 @@
 package de.jonas_thelemann.uni.gosoan.network.interf
 
+import android.os.Handler
+import android.os.Looper
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import timber.log.Timber
@@ -15,6 +17,12 @@ class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
     override var dataSent: Int = 0
     override var exception: Exception? = null
 
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private val reconnectTask = Runnable {
+        exception = null
+        reconnect()
+    }
+
     override fun onOpen(handshakedata: ServerHandshake?) {
         Timber.i("WebSocket connection opened.")
         dequeue()
@@ -27,6 +35,8 @@ class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
             code,
             reason
         )
+        exception = Exception("WebSocket closed")
+        handler.postDelayed(reconnectTask, 1000)
     }
 
     override fun onMessage(message: String?) {
@@ -40,20 +50,24 @@ class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
     }
 
     override fun start() {
-        exception = null
-
-        try {
-            connect()
-        } catch (e: Exception) {
-            exception = e
-        }
+        connect()
     }
 
     override fun stop() {
         close()
+        handler.removeCallbacks(reconnectTask)
     }
 
-    override fun sendBytes(byteArray: ByteArray) {
-        send(byteArray.plus(0x0A))
+    @Synchronized
+    override fun sendBytes(byteArray: ByteArray): Boolean {
+        return try {
+            send(byteArray)
+            true
+        } catch (e: java.lang.Exception) {
+            close()
+            exception = e
+            handler.postDelayed(reconnectTask, 1000)
+            false
+        }
     }
 }
