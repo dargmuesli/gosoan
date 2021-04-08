@@ -30,10 +30,9 @@ class GosoanNetworkTcpClient(override val serverUri: URI) : GosoanNetworkInterfa
     private lateinit var outputStream: OutputStream
 
     override fun start() {
-        exception = null
-
         try {
             clientSocket = Socket(serverUri.host, serverUri.port)
+            exception = null
         } catch (e: Exception) {
             exception = e
             handler.postDelayed(reconnectTask, 1000)

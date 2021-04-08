@@ -19,12 +19,12 @@ class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
 
     private val handler: Handler = Handler(Looper.getMainLooper())
     private val reconnectTask = Runnable {
-        exception = null
         reconnect()
     }
 
     override fun onOpen(handshakedata: ServerHandshake?) {
         Timber.i("WebSocket connection opened.")
+        exception = null
         dequeue()
     }
 

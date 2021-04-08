@@ -10,6 +10,7 @@ import de.jonas_thelemann.uni.gosoan.BuildConfig
 import de.jonas_thelemann.uni.gosoan.MainActivity
 import de.jonas_thelemann.uni.gosoan.PreferenceUtil.Companion.getKey
 import de.jonas_thelemann.uni.gosoan.R
+import de.jonas_thelemann.uni.gosoan.getDefaultServerIp
 import de.jonas_thelemann.uni.gosoan.model.GosoanSensor
 import de.jonas_thelemann.uni.gosoan.service.LocationService
 import de.jonas_thelemann.uni.gosoan.service.SensorService
@@ -78,7 +79,7 @@ class PreferenceFragment : PreferenceFragmentCompat(),
         serverIpPreference.icon = getResourceDrawable("ic_baseline_cloud_24")
         serverIpPreference.key = getKey(prefix, PREFERENCE_SENSOR_SERVER_IP_ID)
         serverIpPreference.title = getResourceString(PREFERENCE_SENSOR_SERVER_IP_ID)
-        serverIpPreference.setDefaultValue(BuildConfig.DEFAULT_SERVER_IP)
+        serverIpPreference.setDefaultValue(getDefaultServerIp())
         serverIpPreference.summaryProvider = EditTextPreference.SimpleSummaryProvider.getInstance()
 
         val dataFormatPreference = ListPreference(context)

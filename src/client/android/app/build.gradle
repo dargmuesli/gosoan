@@ -23,6 +23,7 @@ android {
         buildConfigField "String", "DEFAULT_DATA_FORMAT", '"FlatBuffers"'
         buildConfigField "int", "DEFAULT_MEASUREMENT_FREQUENCY", "200000"
         buildConfigField "String", "DEFAULT_SERVER_IP", '"127.0.0.1"'
+        buildConfigField "String", "DEFAULT_SERVER_IP_EMULATOR", '"10.0.2.2"'
         buildConfigField "String", "DEFAULT_TRANSMISSION_METHOD", '"WebSocket"'
         buildConfigField "int", "MIN_SDK_VERSION", "$minSdkVersion.apiLevel"
         buildConfigField "int", "QUEUE_SIZE_MAX", "65536"
@@ -34,9 +35,6 @@ android {
         buildConfigField "int", "SERVER_PORT_WEBSOCKET_JSON", "8774"
     }
     buildTypes {
-        debug {
-            buildConfigField "String", "DEFAULT_SERVER_IP", '"10.0.2.2"'
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
