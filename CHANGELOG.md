@@ -1,3 +1,10 @@
+## [0.11.1](https://github.com/dargmuesli/gosoan/compare/0.11.0...0.11.1) (2021-04-08)
+
+
+### Bug Fixes
+
+* **android:** improve several parts ([7460518](https://github.com/dargmuesli/gosoan/commit/74605183f782aee4e706bab19acbab2c87c5cda8))
+
 # [0.11.0](https://github.com/dargmuesli/gosoan/compare/0.10.0...0.11.0) (2021-04-08)
 
 
