@@ -1,3 +1,10 @@
+# [0.13.0](https://github.com/dargmuesli/gosoan/compare/0.12.0...0.13.0) (2021-04-12)
+
+
+### Features
+
+* add time measurement tests ([9fb9693](https://github.com/dargmuesli/gosoan/commit/9fb9693b99807a1fafe0a493dcc00d6cf09154c7))
+
 # [0.12.0](https://github.com/dargmuesli/gosoan/compare/0.11.1...0.12.0) (2021-04-12)
 
 
