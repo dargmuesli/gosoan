@@ -5,6 +5,7 @@ import android.os.Looper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.OutputStream
 import java.net.Socket
 import java.net.URI
@@ -40,7 +41,10 @@ class GosoanNetworkTcpClient(override val serverUri: URI) : GosoanNetworkInterfa
         }
 
         outputStream = clientSocket.getOutputStream()
-        dequeue()
+
+        runBlocking {
+            dequeue()
+        }
     }
 
     override fun stop() {

@@ -1,13 +1,13 @@
 package main
 
 import (
-	Gosoan "github.com/dargmuesli/gosoan/de/jonas_thelemann/uni/gosoan"
+	"github.com/dargmuesli/gosoan/de/jonas_thelemann/uni/gosoan/server"
 )
 
 func main() {
 	go func() {
-		Gosoan.WebSocketServer()
+		server.WebSocketServer()
 	}()
 
-	Gosoan.TCPServer()
+	server.TCPServer()
 }

@@ -1,6 +1,8 @@
 package de.jonas_thelemann.uni.gosoan.network.interf
 
 import de.jonas_thelemann.uni.gosoan.BuildConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.URI
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -15,8 +17,8 @@ interface GosoanNetworkInterface {
     fun start()
     fun stop()
 
-    fun enqueue(byteArray: ByteArray) {
-        Thread {
+    suspend fun enqueue(byteArray: ByteArray) {
+        return withContext(Dispatchers.Default) {
             if (queue.size >= BuildConfig.QUEUE_SIZE_MAX) {
                 for (i in (queue.size - BuildConfig.QUEUE_SIZE_MAX) downTo 0) {
                     queue.remove()
@@ -25,15 +27,17 @@ interface GosoanNetworkInterface {
 
             queue.add(byteArray)
             dequeue()
-        }.start()
+        }
     }
 
-    fun dequeue() {
-        queue.forEach {
-            if (!isGosoanOpen) return
-            if (sendBytes(it)) {
-                queue.remove(it)
-                dataSent++
+    suspend fun dequeue() {
+        return withContext(Dispatchers.IO) {
+            for (item in queue) {
+                if (!isGosoanOpen) return@withContext
+                if (sendBytes(item)) {
+                    queue.remove(item)
+                    dataSent++
+                }
             }
         }
     }

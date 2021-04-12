@@ -2,6 +2,7 @@ package de.jonas_thelemann.uni.gosoan.network.interf
 
 import android.os.Handler
 import android.os.Looper
+import kotlinx.coroutines.runBlocking
 import org.java_websocket.client.WebSocketClient
 import org.java_websocket.handshake.ServerHandshake
 import timber.log.Timber
@@ -25,7 +26,10 @@ class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
     override fun onOpen(handshakedata: ServerHandshake?) {
         Timber.i("WebSocket connection opened.")
         exception = null
-        dequeue()
+
+        runBlocking {
+            dequeue()
+        }
     }
 
     override fun onClose(code: Int, reason: String?, remote: Boolean) {
@@ -50,11 +54,11 @@ class GosoanNetworkWebSocketClient constructor(override val serverUri: URI) :
     }
 
     override fun start() {
-        connect()
+        connectBlocking()
     }
 
     override fun stop() {
-        close()
+        closeBlocking()
         handler.removeCallbacks(reconnectTask)
     }
 

@@ -27,8 +27,6 @@ android {
         buildConfigField "String", "DEFAULT_TRANSMISSION_METHOD", '"WebSocket"'
         buildConfigField "int", "MIN_SDK_VERSION", "$minSdkVersion.apiLevel"
         buildConfigField "int", "QUEUE_SIZE_MAX", "65536"
-        buildConfigField "String", "SERVER_PATH_FLATBUFFERS", '"/echo/flatbuffers"'
-        buildConfigField "String", "SERVER_PATH_JSON", '"/echo/json"'
         buildConfigField "int", "SERVER_PORT_TCP_FLATBUFFERS", "8470"
         buildConfigField "int", "SERVER_PORT_TCP_JSON", "8474"
         buildConfigField "int", "SERVER_PORT_WEBSOCKET_FLATBUFFERS", "8770"

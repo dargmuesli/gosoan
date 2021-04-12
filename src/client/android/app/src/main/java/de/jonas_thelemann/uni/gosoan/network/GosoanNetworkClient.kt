@@ -14,12 +14,14 @@ import de.jonas_thelemann.uni.gosoan.repository.NetworkInterfaceRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.net.URI
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class GosoanNetworkClient @Inject constructor(private val networkInterfaceRepository: NetworkInterfaceRepository) {
+    private val gson = Gson()
 
     @ExperimentalUnsignedTypes
     fun send(gosoanSensorEvent: GosoanSensorEvent) {
@@ -34,10 +36,12 @@ class GosoanNetworkClient @Inject constructor(private val networkInterfaceReposi
             GosoanDataFormat.FlatBuffers -> getGosoanSensorEventAsFlatBuffersByteArray(
                 gosoanSensorEvent
             )
-            GosoanDataFormat.JSON -> Gson().toJson(gosoanSensorEvent).toByteArray()
+            GosoanDataFormat.JSON -> gson.toJson(gosoanSensorEvent).toByteArray()
         }
 
-        transmissionConfiguration.networkInterface.enqueue(byteArray)
+        runBlocking {
+            transmissionConfiguration.networkInterface.enqueue(byteArray)
+        }
     }
 
     fun setupNetworkClient(
@@ -65,7 +69,7 @@ class GosoanNetworkClient @Inject constructor(private val networkInterfaceReposi
         if (gosoanNetworkInterface == null) {
             gosoanNetworkInterface = when (transmissionMethod) {
                 GosoanTransmissionMethod.TCP -> GosoanNetworkTcpClient(URI("tcp://$serverIp:$port"))
-                GosoanTransmissionMethod.WebSocket -> GosoanNetworkWebSocketClient(URI("http://$serverIp:$port"))
+                GosoanTransmissionMethod.WebSocket -> GosoanNetworkWebSocketClient(URI("ws://$serverIp:$port"))
             }
 
             networkInterfaceRepository.addNetworkInterface(gosoanNetworkInterface)

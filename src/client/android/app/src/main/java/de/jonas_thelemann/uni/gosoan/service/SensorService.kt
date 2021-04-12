@@ -64,6 +64,8 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
             Sensor.TYPE_STEP_DETECTOR to 19,
         )
 
+        private var isRunning = false
+
         fun getSensorMap(context: Context): MutableMap<Int, Sensor> {
             val sensorMap: MutableMap<Int, Sensor> = mutableMapOf()
             val sensorManager = context.getSystemService(SENSOR_SERVICE) as SensorManager
@@ -118,7 +120,7 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
         }
 
         fun start(context: Context) {
-            if (isCreatable(context)) {
+            if (!isRunning && isCreatable(context)) {
                 ContextCompat.startForegroundService(
                     context,
                     Intent(context, SensorService::class.java)
@@ -127,7 +129,9 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
         }
 
         private fun stop(context: Context) {
-            context.stopService(Intent(context, SensorService::class.java))
+            if (isRunning) {
+                context.stopService(Intent(context, SensorService::class.java))
+            }
         }
 
         fun restart(context: Context) {
@@ -206,6 +210,8 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
             locationService.registerListener(it)
         }
 
+        isRunning = true
+
         return START_STICKY
     }
 
@@ -256,6 +262,7 @@ class SensorService @Inject constructor() : SensorEventListener, Service() {
         (getSystemService(SENSOR_SERVICE) as SensorManager).unregisterListener(this)
         locationService.unregisterListener()
         gosoanNetworkClient.teardownNetworkClients()
+        isRunning = false
         Timber.i("Service Stopped.")
     }
 
