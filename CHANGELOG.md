@@ -1,3 +1,10 @@
+# [0.12.0](https://github.com/dargmuesli/gosoan/compare/0.11.1...0.12.0) (2021-04-12)
+
+
+### Features
+
+* **go:** listen on 0.0.0.0 ([e23f7ec](https://github.com/dargmuesli/gosoan/commit/e23f7ecd58d103e8d4f3505202c6caf4ea936e40))
+
 ## [0.11.1](https://github.com/dargmuesli/gosoan/compare/0.11.0...0.11.1) (2021-04-08)
 
 
