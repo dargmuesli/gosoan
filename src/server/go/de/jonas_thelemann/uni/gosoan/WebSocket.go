@@ -10,8 +10,8 @@ import (
 var upgrader = websocket.Upgrader{} // use default options
 
 func WebSocketServer() {
-	addrWebSocketFlatBuffers := "127.0.0.1:8770"
-	addrWebSocketJson := "127.0.0.1:8774"
+	addrWebSocketFlatBuffers := "0.0.0.0:8770"
+	addrWebSocketJson := "0.0.0.0:8774"
 
 	log.Println("Listening WebSockets/FlatBuffers on: " + addrWebSocketFlatBuffers)
 	log.Println("Listening WebSockets/Json on: " + addrWebSocketJson)
@@ -22,10 +22,10 @@ func WebSocketServer() {
 	serverMuxJson.HandleFunc("/", echoJson)
 
 	go func() {
-		log.Fatal(http.ListenAndServe("localhost:8770", serverMuxFlatBuffers))
+		log.Fatal(http.ListenAndServe(addrWebSocketFlatBuffers, serverMuxFlatBuffers))
 	}()
 
-	log.Fatal(http.ListenAndServe("localhost:8774", serverMuxJson))
+	log.Fatal(http.ListenAndServe(addrWebSocketJson, serverMuxJson))
 }
 
 func echoFlatBuffers(w http.ResponseWriter, r *http.Request) {

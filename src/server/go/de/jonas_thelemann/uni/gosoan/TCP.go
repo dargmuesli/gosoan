@@ -10,8 +10,8 @@ import (
 )
 
 func TCPServer() {
-	addrWebSocketFlatBuffers := "127.0.0.1:8470"
-	addrWebSocketJson := "127.0.0.1:8474"
+	addrWebSocketFlatBuffers := "0.0.0.0:8470"
+	addrWebSocketJson := "0.0.0.0:8474"
 
 	listenerFlatBuffers, err := net.Listen("tcp4", addrWebSocketFlatBuffers)
 	if err != nil {
@@ -23,9 +23,6 @@ func TCPServer() {
 		fmt.Println(err)
 		return
 	}
-
-	//defer listenerFlatBuffers.Close()
-	//defer listenerJson.Close()
 
 	log.Println("Listening TCP/FlatBuffers on: " + addrWebSocketFlatBuffers)
 	log.Println("Listening TCP/Json on: " + addrWebSocketJson)
