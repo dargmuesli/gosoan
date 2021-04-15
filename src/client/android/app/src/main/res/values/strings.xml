@@ -18,7 +18,7 @@
     <string name="microseconds">%1$s µs (guide value)</string>
     <string name="more">More</string>
     <string name="network_interface_template">%1$s:%2$d</string>
-    <string name="network_interfaces">Network Interfaces</string>
+    <string name="network_interfaces">Network interfaces</string>
     <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
     <string name="not_set">Not set</string>
     <string name="override_global_preference">Override global preference</string>

@@ -62,10 +62,6 @@ class MainActivity : AppCompatActivity() {
         SensorService.start(this)
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//    }
-
     override fun onResume() {
         super.onResume()
 
@@ -85,11 +81,6 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferencesListener)
     }
-
-//    override fun onStop() {
-//        super.onStop()
-////        sensorService.onStop()
-//    }
 
     override fun onDestroy() {
         super.onDestroy()
