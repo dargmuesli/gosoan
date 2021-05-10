@@ -3,7 +3,7 @@ module github.com/dargmuesli/gosoan
 go 1.16
 
 require (
-	github.com/google/flatbuffers v1.12.1
+	github.com/google/flatbuffers/v2 v2.0.0
 	github.com/gorilla/websocket v1.4.2
 	rsc.io/quote v1.5.2
 )
